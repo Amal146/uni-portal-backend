@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.university.config;
 
 public class DatabaseConfig {
     

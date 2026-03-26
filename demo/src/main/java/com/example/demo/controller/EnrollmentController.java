@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.university.controller;
 
 public class EnrollmentController {
     
