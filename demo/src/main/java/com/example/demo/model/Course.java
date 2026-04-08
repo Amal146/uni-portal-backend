@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -34,7 +36,51 @@ public class Course {
     private String category;
     private String season;
     
+    
+// Add relationship to enrollments
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Enrollment> enrollments = new ArrayList<>();
+    
+    // Add relationship to course lecturers
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CourseLecturer> courseLecturers = new ArrayList<>();
+    
+    // Add relationship to schedules
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Schedule> schedules = new ArrayList<>();
+    
     public enum CourseType {
         lecture, seminar
+    }
+    
+    // Helper methods
+    public void addEnrollment(Enrollment enrollment) {
+        enrollments.add(enrollment);
+        enrollment.setCourse(this);
+    }
+    
+    public void removeEnrollment(Enrollment enrollment) {
+        enrollments.remove(enrollment);
+        enrollment.setCourse(null);
+    }
+    
+    public void addCourseLecturer(CourseLecturer courseLecturer) {
+        courseLecturers.add(courseLecturer);
+        courseLecturer.setCourse(this);
+    }
+    
+    public void removeCourseLecturer(CourseLecturer courseLecturer) {
+        courseLecturers.remove(courseLecturer);
+        courseLecturer.setCourse(null);
+    }
+    
+    public void addSchedule(Schedule schedule) {
+        schedules.add(schedule);
+        schedule.setCourse(this);
+    }
+    
+    public void removeSchedule(Schedule schedule) {
+        schedules.remove(schedule);
+        schedule.setCourse(null);
     }
 }

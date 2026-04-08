@@ -1,6 +1,13 @@
 package com.example.demo.repository;
-package com.example.university.repository;
 
-public class EnrollmentRepository {
-    
+import com.example.demo.model.Enrollment;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Repository
+public interface EnrollmentRepository extends JpaRepository<Enrollment, String> {
+    List<Enrollment> findByStudentId(String studentId);
+    List<Enrollment> findByCourseId(String courseId);
+    List<Enrollment> findByStudentIdAndStatus(String studentId, Enrollment.EnrollmentStatus status);
 }
