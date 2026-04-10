@@ -27,6 +27,7 @@ public class Student {
     
     private Integer startYear;
     private Integer maxYears;
+    private String password;
     
     public enum Season {
         Winter, Summer

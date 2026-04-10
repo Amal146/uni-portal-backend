@@ -26,6 +26,7 @@ public class Lecturer {
     
     private String email;
     private String department;
+    private String password;
     
     // Relationship: Lecturer coordinates many modules (as module coordinator)
     @OneToMany(mappedBy = "moduleCoordinator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
