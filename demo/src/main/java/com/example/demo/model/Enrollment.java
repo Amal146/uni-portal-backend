@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -15,21 +16,36 @@ public class Enrollment {
     private String id;
     
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "student_id", nullable = false)
     private Student student;
     
     @ManyToOne
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
     
+    @ManyToOne
+    @JoinColumn(name = "semester_id", nullable = false)
+    private SemesterMeta semester;
+    
+    private Integer plannedSlot;
+    
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EnrollmentStatus status;
     
-    @ManyToOne
-    @JoinColumn(name = "planned_semester_id")
-    private Semester plannedSemester;
+    private Integer grade;
+    
+    @Column(nullable = false)
+    private LocalDateTime enrolledAt;
     
     public enum EnrollmentStatus {
-        registered, completed, pending
+        completed, registered, pending, failed
+    }
+    
+    @PrePersist
+    protected void onCreate() {
+        if (enrolledAt == null) {
+            enrolledAt = LocalDateTime.now();
+        }
     }
 }

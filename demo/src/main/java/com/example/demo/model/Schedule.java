@@ -13,7 +13,6 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "schedule")
 public class Schedule {
-    
     @Id
     private String id;
     
@@ -21,32 +20,20 @@ public class Schedule {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
     
+    @ManyToOne
+    @JoinColumn(name = "semester_id", nullable = false)
+    private SemesterMeta semester;
+    
     @Column(nullable = false)
     private LocalDate date;
     
-    @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
+    @Enumerated(EnumType.STRING)
+    private DayOfWeek dayOfWeek;
     
-    @Column(name = "end_time", nullable = false)
-    private LocalTime endTime;
-    
+    private String timeSlot;
     private String room;
     
-    // Helper methods
-    public boolean isOverlapping(Schedule other) {
-        if (!this.date.equals(other.date)) {
-            return false;
-        }
-        
-        return (this.startTime.isBefore(other.endTime) && 
-                this.endTime.isAfter(other.startTime));
-    }
-    
-    public long getDurationInMinutes() {
-        return java.time.Duration.between(startTime, endTime).toMinutes();
-    }
-    
-    public String getTimeSlot() {
-        return startTime.toString() + " - " + endTime.toString();
+    public enum DayOfWeek {
+        Mon, Tue, Wed, Thu, Fri, Sat
     }
 }

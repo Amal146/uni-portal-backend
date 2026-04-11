@@ -10,14 +10,34 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "semester_meta")
+@Table(name = "semester_metas")
 public class SemesterMeta {
     @Id
     private String id;
     
     private String name;
+    private String shortLabel;
+    private String label;
+    
+    @Enumerated(EnumType.STRING)
+    private Season season;
+    
+    private Integer calYear;
+    
     private LocalDate start;
     private LocalDate end;
+    
     private LocalDate examPeriodStart;
     private LocalDate examPeriodEnd;
+    
+    @Enumerated(EnumType.STRING)
+    private SemesterStatus status;
+    
+    public enum Season {
+        Winter, Summer
+    }
+    
+    public enum SemesterStatus {
+        upcoming, current, completed
+    }
 }

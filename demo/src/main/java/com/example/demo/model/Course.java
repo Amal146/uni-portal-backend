@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,63 +23,49 @@ public class Course {
     @Enumerated(EnumType.STRING)
     private CourseType type;
     
-    private Boolean thesisPrereq;
-    private String language;
-    
     @ManyToOne
-    @JoinColumn(name = "module_id")
+    @JoinColumn(name = "module_id", nullable = false)
     private Module module;
     
-    private String moodleUrl;
+    @ManyToOne
+    @JoinColumn(name = "programme_id", nullable = false)
+    private Programme programme;
+    
+    private String language;
+    
+    @Enumerated(EnumType.STRING)
+    private Season season;
+    
     private String description;
+    private String taughtUnits;
+    private String privateStudyTime;
+    
+    private Boolean thesisPrereq;
+    private String moodleUrl;
+    
+    @ManyToOne
+    @JoinColumn(name = "coordinator_id")
+    private Lecturer coordinator;
+    
     private String category;
-    private String season;
     
-    
-// Add relationship to enrollments
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Enrollment> enrollments = new ArrayList<>();
     
-    // Add relationship to course lecturers
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CourseLecturer> courseLecturers = new ArrayList<>();
     
-    // Add relationship to schedules
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Schedule> schedules = new ArrayList<>();
     
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Registration> registrations = new ArrayList<>();
+    
     public enum CourseType {
-        lecture, seminar
+        lecture, seminar, exam
     }
     
-    // Helper methods
-    public void addEnrollment(Enrollment enrollment) {
-        enrollments.add(enrollment);
-        enrollment.setCourse(this);
-    }
-    
-    public void removeEnrollment(Enrollment enrollment) {
-        enrollments.remove(enrollment);
-        enrollment.setCourse(null);
-    }
-    
-    public void addCourseLecturer(CourseLecturer courseLecturer) {
-        courseLecturers.add(courseLecturer);
-        courseLecturer.setCourse(this);
-    }
-    
-    public void removeCourseLecturer(CourseLecturer courseLecturer) {
-        courseLecturers.remove(courseLecturer);
-        courseLecturer.setCourse(null);
-    }
-    
-    public void addSchedule(Schedule schedule) {
-        schedules.add(schedule);
-        schedule.setCourse(this);
-    }
-    
-    public void removeSchedule(Schedule schedule) {
-        schedules.remove(schedule);
-        schedule.setCourse(null);
+    public enum Season {
+        Winter, Summer, Both
     }
 }
