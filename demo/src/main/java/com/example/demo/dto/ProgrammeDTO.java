@@ -1,23 +1,23 @@
 package com.example.demo.dto;
 
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import com.example.demo.model.Programme.Degree;
+
+import lombok.*;
+
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProgrammeDTO {
+
     private String id;
     private String name;
-    private Degree degree;
-    private String faculty;
-    private Integer minEctsPerYear;
-    
-    // Additional statistics
-    private Long totalStudents;
-    private Long totalModules;
+    private String shortName;
+    private String degree;
     private Integer totalEcts;
+    private Integer standardSems;
+    private LocalDate validFrom;
+    private Integer thesisEcts;
+    private Integer thesisMinEcts;
 }

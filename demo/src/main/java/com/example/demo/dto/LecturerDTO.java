@@ -9,14 +9,12 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LecturerDTO {
+
     private String id;
+    private String title;
     private String firstName;
     private String lastName;
     private String email;
     private String department;
-    
-    // Additional information
-    private Integer totalCoursesTaught;
-    private Integer totalModulesCoordinated;
-    private Integer totalStudentsTaught;
+    private String role;
 }

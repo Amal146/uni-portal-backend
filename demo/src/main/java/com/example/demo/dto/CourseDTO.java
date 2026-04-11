@@ -1,33 +1,27 @@
 package com.example.demo.dto;
 
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import com.example.demo.model.Course.CourseType;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CourseDTO {
+
     private String id;
     private String courseNumber;
     private String name;
     private String shortName;
-    private CourseType type;
-    private Boolean thesisPrereq;
-    private String language;
+    private String type;
     private String moduleId;
-    private String moduleName;
-    private String moodleUrl;
-    private String description;
-    private String category;
+    private String programmeId;
+    private String language;
     private String season;
-    
-    // Additional statistics
-    private Integer totalEnrollments;
-    private Integer totalLecturers;
-    private Integer totalSessions;
-    private Integer capacity;
-    private Integer availableSeats;
+    private String description;
+    private String taughtUnits;
+    private String privateStudyTime;
+    private Boolean thesisPrereq;
+    private String moodleUrl;
+    private String coordinatorId;
+    private String category;
 }

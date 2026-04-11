@@ -1,22 +1,22 @@
 package com.example.demo.dto;
 
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnrollmentDTO {
+public class RegistrationPeriodDTO {
 
     private String id;
-    private String studentId;
-    private String courseId;
     private String semesterId;
-    private Integer plannedSlot;
+    private String type;
+    private LocalDate openDate;
+    private LocalDate closeDate;
+    private LocalDate deregDeadline;
     private String status;
-    private Double grade;
-    private LocalDateTime enrolledAt;
 }

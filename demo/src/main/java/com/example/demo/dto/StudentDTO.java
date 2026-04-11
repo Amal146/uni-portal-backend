@@ -1,25 +1,24 @@
 package com.example.demo.dto;
 
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import com.example.demo.model.Student.Season;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentDTO {
+
     private String id;
-    private Integer matriculationNumber;
+    private String userId;
+    private String matricNumber;
     private String firstName;
     private String lastName;
+    private String email;
     private String programmeId;
-    private String programmeName;
-    private Season startSeason;
+    private String startSemester;
+    private String startSeason;
     private Integer startYear;
     private Integer maxYears;
-    private Integer currentSemester;
-    private Integer totalEarnedEcts;
-    private Double averageGrade;
+    private Integer minEctsPerYear;
+    private String status;
+    private String role;
 }
