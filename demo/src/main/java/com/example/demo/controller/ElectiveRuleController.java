@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/elective-rules")
+@RequestMapping("/elective-rules")
 @RequiredArgsConstructor
 public class ElectiveRuleController {
     private final ElectiveRuleService electiveRuleService;

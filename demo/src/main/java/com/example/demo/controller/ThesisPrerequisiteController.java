@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/thesis-prerequisites")
+@RequestMapping("/thesis-prerequisites")
 @RequiredArgsConstructor
 public class ThesisPrerequisiteController {
     private final ThesisPrerequisiteService thesisPrerequisiteService;

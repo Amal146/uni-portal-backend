@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/elective-substitution-rules")
+@RequestMapping("/elective-substitution-rules")
 @RequiredArgsConstructor
 public class ElectiveSubstitutionRuleController {
     private final ElectiveSubstitutionRuleService substitutionRuleService;

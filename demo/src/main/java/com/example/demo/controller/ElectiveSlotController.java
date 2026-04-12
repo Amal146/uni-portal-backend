@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/elective-slots")
+@RequestMapping("/elective-slots")
 @RequiredArgsConstructor
 public class ElectiveSlotController {
     private final ElectiveSlotService electiveSlotService;

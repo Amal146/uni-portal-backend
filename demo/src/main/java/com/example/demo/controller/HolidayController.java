@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/holidays")
+@RequestMapping("/holidays")
 @RequiredArgsConstructor
 public class HolidayController {
     private final HolidayService holidayService;
