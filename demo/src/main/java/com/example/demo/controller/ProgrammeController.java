@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/programmes")
+@RequestMapping("/programmes")
 @RequiredArgsConstructor
 public class ProgrammeController {
     private final ProgrammeService programmeService;

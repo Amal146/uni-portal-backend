@@ -30,7 +30,7 @@ public class ElectiveSlot {
     
     @ManyToOne
     @JoinColumn(name = "planned_semester_id")
-    private SemesterMeta plannedSemester;
+    private Semester plannedSemester;
     
     @ManyToOne
     @JoinColumn(name = "selected_course_id")

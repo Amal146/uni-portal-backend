@@ -27,7 +27,7 @@ public class Holiday {
     
     @ManyToOne
     @JoinColumn(name = "semester_id", nullable = false)
-    private SemesterMeta semester;
+    private Semester semester;
     
     private LocalDate time;
     private String room;

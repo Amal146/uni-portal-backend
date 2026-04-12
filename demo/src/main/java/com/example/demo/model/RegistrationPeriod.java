@@ -19,7 +19,7 @@ public class RegistrationPeriod {
     
     @ManyToOne
     @JoinColumn(name = "semester_id", nullable = false)
-    private SemesterMeta semester;
+    private Semester semester;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

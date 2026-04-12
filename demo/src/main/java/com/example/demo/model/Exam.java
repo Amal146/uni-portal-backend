@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class Exam {
     
     @ManyToOne
     @JoinColumn(name = "semester_id", nullable = false)
-    private SemesterMeta semester;
+    private Semester semester;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

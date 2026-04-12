@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +21,7 @@ public class Schedule {
     
     @ManyToOne
     @JoinColumn(name = "semester_id", nullable = false)
-    private SemesterMeta semester;
+    private Semester semester;
     
     @Column(nullable = false)
     private LocalDate date;

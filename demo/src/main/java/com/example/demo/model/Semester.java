@@ -24,6 +24,7 @@ public class Semester {
     
     private Integer calYear;
     private LocalDate start;
+    @Column(name = "`end`")
     private LocalDate end;
     private LocalDate examPeriodStart;
     private LocalDate examPeriodEnd;

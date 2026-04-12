@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/lecturers")
+@RequestMapping("/lecturers")
 @RequiredArgsConstructor
 public class LecturerController {
     private final LecturerService lecturerService;
