@@ -1,60 +1,70 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.ExamRegistrationDTO;
 import com.example.demo.model.ExamRegistration;
 import com.example.demo.repository.ExamRegistrationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ExamRegistrationService {
-    
-    @Autowired
-    private ExamRegistrationRepository examRegistrationRepository;
-    
-    public List<ExamRegistrationDTO> getAllExamRegistrations() {
-        return examRegistrationRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+    private final ExamRegistrationRepository examRegistrationRepository;
+
+    public List<ExamRegistration> getAllExamRegistrations() {
+        return examRegistrationRepository.findAll();
     }
-    
-    public Optional<ExamRegistrationDTO> getExamRegistrationById(String id) {
-        return examRegistrationRepository.findById(id).map(this::convertToDTO);
+
+    public ExamRegistration getExamRegistrationById(String id) {
+        return examRegistrationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ExamRegistration not found with id: " + id));
     }
-    
-    public ExamRegistrationDTO createExamRegistration(ExamRegistrationDTO dto) {
-        ExamRegistration entity = convertToEntity(dto);
-        ExamRegistration saved = examRegistrationRepository.save(entity);
-        return convertToDTO(saved);
+
+    @Transactional
+    public ExamRegistration createExamRegistration(ExamRegistration registration) {
+        if (registration.getId() == null) {
+            registration.setId(UUID.randomUUID().toString());
+        }
+        if (registration.getRegisteredAt() == null) {
+            registration.setRegisteredAt(LocalDateTime.now());
+        }
+        if (registration.getAttempt() == null) {
+            registration.setAttempt(1);
+        }
+        return examRegistrationRepository.save(registration);
     }
-    
+
+    @Transactional
+    public ExamRegistration updateExamRegistration(String id, ExamRegistration registrationDetails) {
+        ExamRegistration registration = getExamRegistrationById(id);
+        registration.setStudent(registrationDetails.getStudent());
+        registration.setExam(registrationDetails.getExam());
+        registration.setStatus(registrationDetails.getStatus());
+        registration.setGrade(registrationDetails.getGrade());
+        registration.setAttempt(registrationDetails.getAttempt());
+        return examRegistrationRepository.save(registration);
+    }
+
+    @Transactional
     public void deleteExamRegistration(String id) {
         examRegistrationRepository.deleteById(id);
     }
-    
-    public List<ExamRegistrationDTO> getByStudentId(String studentId) {
-        return examRegistrationRepository.findByStudentId(studentId).stream().map(this::convertToDTO).collect(Collectors.toList());
+
+    public List<ExamRegistration> getRegistrationsByStudentId(String studentId) {
+        return examRegistrationRepository.findByStudentId(studentId);
     }
-    
-    public List<ExamRegistrationDTO> getByExamId(String examId) {
-        return examRegistrationRepository.findByExamId(examId).stream().map(this::convertToDTO).collect(Collectors.toList());
+
+    public List<ExamRegistration> getRegistrationsByExamId(String examId) {
+        return examRegistrationRepository.findByExamId(examId);
     }
-    
-    private ExamRegistrationDTO convertToDTO(ExamRegistration entity) {
-        ExamRegistrationDTO dto = new ExamRegistrationDTO();
-        dto.setId(entity.getId());
-        dto.setStudentId(entity.getStudent().getId());
-        dto.setExamId(entity.getExam().getId());
-        dto.setStatus(entity.getStatus().name());
-        // add more
-        return dto;
-    }
-    
-    private ExamRegistration convertToEntity(ExamRegistrationDTO dto) {
-        ExamRegistration entity = new ExamRegistration();
-        // simplistic
-        entity.setId(dto.getId());
-        return entity;
+
+    public ExamRegistration getRegistrationByStudentIdAndExamId(String studentId, String examId) {
+        return examRegistrationRepository.findByStudentIdAndExamId(studentId, examId)
+                .orElseThrow(() -> new RuntimeException("Registration not found"));
     }
 }

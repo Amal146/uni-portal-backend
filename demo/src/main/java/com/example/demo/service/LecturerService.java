@@ -1,118 +1,76 @@
 package com.example.demo.service;
 
-
 import com.example.demo.model.Lecturer;
 import com.example.demo.repository.LecturerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class LecturerService {
-    
-    @Autowired
-    private LecturerRepository lecturerRepository;
-    
-    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
-    
+    private final LecturerRepository lecturerRepository;
+
     public List<Lecturer> getAllLecturers() {
         return lecturerRepository.findAll();
     }
-    
-    public Optional<Lecturer> getLecturerById(String id) {
-        return lecturerRepository.findById(id);
+
+    public Lecturer getLecturerById(String id) {
+        return lecturerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Lecturer not found with id: " + id));
     }
-    
+
+    @Transactional
+    public Lecturer createLecturer(Lecturer lecturer) {
+        if (lecturer.getId() == null) {
+            lecturer.setId(UUID.randomUUID().toString());
+        }
+        return lecturerRepository.save(lecturer);
+    }
+
+    @Transactional
+    public Lecturer updateLecturer(String id, Lecturer lecturerDetails) {
+        Lecturer lecturer = getLecturerById(id);
+        lecturer.setTitle(lecturerDetails.getTitle());
+        lecturer.setFirstName(lecturerDetails.getFirstName());
+        lecturer.setLastName(lecturerDetails.getLastName());
+        lecturer.setEmail(lecturerDetails.getEmail());
+        lecturer.setDepartment(lecturerDetails.getDepartment());
+        lecturer.setRole(lecturerDetails.getRole());
+        return lecturerRepository.save(lecturer);
+    }
+
+    @Transactional
+    public void deleteLecturer(String id) {
+        lecturerRepository.deleteById(id);
+    }
+
     public List<Lecturer> getLecturersByDepartment(String department) {
         return lecturerRepository.findByDepartment(department);
     }
-    
-    public Optional<Lecturer> getLecturerByEmail(String email) {
-        return lecturerRepository.findByEmail(email);
+
+    public Lecturer getLecturerByEmail(String email) {
+        return lecturerRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Lecturer not found with email: " + email));
     }
-    
-    public List<Lecturer> searchLecturers(String firstName, String lastName) {
-        if (firstName != null && lastName != null) {
-            return lecturerRepository.findByFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
-                firstName, lastName);
-        } else if (firstName != null) {
-            return lecturerRepository.findByFirstNameContainingIgnoreCase(firstName);
-        } else if (lastName != null) {
-            return lecturerRepository.findByLastNameContainingIgnoreCase(lastName);
-        }
-        return lecturerRepository.findAll();
+
+    public List<Lecturer> searchLecturersByFirstName(String firstName) {
+        return lecturerRepository.findByFirstNameContainingIgnoreCase(firstName);
     }
-    
-    @Transactional
-    public Lecturer createLecturer(Lecturer lecturer) {
-        // Validate email
-        if (lecturer.getEmail() != null && !EMAIL_PATTERN.matcher(lecturer.getEmail()).matches()) {
-            throw new RuntimeException("Invalid email format");
-        }
-        
-        // Check for duplicate email
-        if (lecturer.getEmail() != null) {
-            Optional<Lecturer> existingLecturer = lecturerRepository.findByEmail(lecturer.getEmail());
-            if (existingLecturer.isPresent()) {
-                throw new RuntimeException("Email already exists");
-            }
-        }
-        
-        return lecturerRepository.save(lecturer);
+
+    public List<Lecturer> searchLecturersByLastName(String lastName) {
+        return lecturerRepository.findByLastNameContainingIgnoreCase(lastName);
     }
-    
-    @Transactional
-    public Lecturer updateLecturer(String id, Lecturer lecturerDetails) {
-        Lecturer lecturer = lecturerRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Lecturer not found with id: " + id));
-        
-        if (lecturerDetails.getFirstName() != null) {
-            lecturer.setFirstName(lecturerDetails.getFirstName());
-        }
-        
-        if (lecturerDetails.getLastName() != null) {
-            lecturer.setLastName(lecturerDetails.getLastName());
-        }
-        
-        if (lecturerDetails.getEmail() != null) {
-            // Validate email format
-            if (!EMAIL_PATTERN.matcher(lecturerDetails.getEmail()).matches()) {
-                throw new RuntimeException("Invalid email format");
-            }
-            
-            // Check for duplicate email (excluding current lecturer)
-            Optional<Lecturer> existingLecturer = lecturerRepository.findByEmail(lecturerDetails.getEmail());
-            if (existingLecturer.isPresent() && !existingLecturer.get().getId().equals(id)) {
-                throw new RuntimeException("Email already exists");
-            }
-            lecturer.setEmail(lecturerDetails.getEmail());
-        }
-        
-        if (lecturerDetails.getDepartment() != null) {
-            lecturer.setDepartment(lecturerDetails.getDepartment());
-        }
-        
-        return lecturerRepository.save(lecturer);
+
+    public List<Lecturer> searchLecturersByName(String firstName, String lastName) {
+        return lecturerRepository.findByFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(firstName, lastName);
     }
-    
-    @Transactional
-    public void deleteLecturer(String id) {
-        Lecturer lecturer = lecturerRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Lecturer not found with id: " + id));
-        
-        // Check if lecturer is module coordinator for any module
-        if (lecturer.getCoordinatedModules() != null && !lecturer.getCoordinatedModules().isEmpty()) {
-            throw new RuntimeException("Cannot delete lecturer who coordinates modules");
-        }
-        
-        lecturerRepository.deleteById(id);
-    }
-    
-    public long getLecturerCountByDepartment(String department) {
+
+    public long countLecturersByDepartment(String department) {
         return lecturerRepository.countByDepartment(department);
     }
 }

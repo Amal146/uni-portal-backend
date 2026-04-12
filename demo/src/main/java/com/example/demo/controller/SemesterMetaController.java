@@ -2,48 +2,63 @@ package com.example.demo.controller;
 
 import com.example.demo.model.SemesterMeta;
 import com.example.demo.service.SemesterMetaService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/semesters")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/semester-metas")
+@RequiredArgsConstructor
 public class SemesterMetaController {
-    
-    @Autowired
-    private SemesterMetaService semesterMetaService;
-    
+    private final SemesterMetaService semesterMetaService;
+
     @GetMapping
-    public ResponseEntity<List<SemesterMeta>> getAllSemesters() {
-        return ResponseEntity.ok(semesterMetaService.getAllSemesters());
+    public ResponseEntity<List<SemesterMeta>> getAllSemesterMetas() {
+        return ResponseEntity.ok(semesterMetaService.getAllSemesterMetas());
     }
-    
+
     @GetMapping("/{id}")
-    public ResponseEntity<SemesterMeta> getSemesterById(@PathVariable String id) {
-        return semesterMetaService.getSemesterById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<SemesterMeta> getSemesterMetaById(@PathVariable String id) {
+        return ResponseEntity.ok(semesterMetaService.getSemesterMetaById(id));
     }
-    
-    @GetMapping("/active")
-    public ResponseEntity<List<SemesterMeta>> getActiveSemesters() {
-        return ResponseEntity.ok(semesterMetaService.getActiveSemesters());
-    }
-    
+
     @PostMapping
-    public ResponseEntity<SemesterMeta> createSemester(@RequestBody SemesterMeta semester) {
-        return new ResponseEntity<>(semesterMetaService.createSemester(semester), HttpStatus.CREATED);
+    public ResponseEntity<SemesterMeta> createSemesterMeta(@RequestBody SemesterMeta semesterMeta) {
+        return new ResponseEntity<>(semesterMetaService.createSemesterMeta(semesterMeta), HttpStatus.CREATED);
     }
-    
+
     @PutMapping("/{id}")
-    public ResponseEntity<SemesterMeta> updateSemester(@PathVariable String id, @RequestBody SemesterMeta semester) {
-        try {
-            return ResponseEntity.ok(semesterMetaService.updateSemester(id, semester));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<SemesterMeta> updateSemesterMeta(@PathVariable String id, @RequestBody SemesterMeta semesterMeta) {
+        return ResponseEntity.ok(semesterMetaService.updateSemesterMeta(id, semesterMeta));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSemesterMeta(@PathVariable String id) {
+        semesterMetaService.deleteSemesterMeta(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/season/{season}")
+    public ResponseEntity<List<SemesterMeta>> getSemesterMetasBySeason(@PathVariable SemesterMeta.Season season) {
+        return ResponseEntity.ok(semesterMetaService.getSemesterMetasBySeason(season));
+    }
+
+    @GetMapping("/year/{calYear}")
+    public ResponseEntity<List<SemesterMeta>> getSemesterMetasByCalYear(@PathVariable Integer calYear) {
+        return ResponseEntity.ok(semesterMetaService.getSemesterMetasByCalYear(calYear));
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<SemesterMeta>> getSemesterMetasByStatus(@PathVariable SemesterMeta.SemesterStatus status) {
+        return ResponseEntity.ok(semesterMetaService.getSemesterMetasByStatus(status));
+    }
+
+    @GetMapping("/lookup")
+    public ResponseEntity<SemesterMeta> getSemesterMetaByLabelAndCalYear(
+            @RequestParam String label, @RequestParam Integer calYear) {
+        return ResponseEntity.ok(semesterMetaService.getSemesterMetaByLabelAndCalYear(label, calYear));
     }
 }

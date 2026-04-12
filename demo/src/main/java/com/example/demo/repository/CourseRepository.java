@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface CourseRepository extends JpaRepository<Course, String> {
     
     // Existing methods
+
+    List<Course> findByProgrammeId(String programmeId);
     List<Course> findByModuleId(String moduleId);
     
     List<Course> findByType(Course.CourseType type);

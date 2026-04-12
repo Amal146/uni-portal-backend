@@ -2,61 +2,71 @@ package com.example.demo.service;
 
 import com.example.demo.model.SemesterMeta;
 import com.example.demo.repository.SemesterMetaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SemesterMetaService {
-    
-    @Autowired
-    private SemesterMetaRepository semesterMetaRepository;
-    
-    public List<SemesterMeta> getAllSemesters() {
+    private final SemesterMetaRepository semesterMetaRepository;
+
+    public List<SemesterMeta> getAllSemesterMetas() {
         return semesterMetaRepository.findAll();
     }
-    
-    public Optional<SemesterMeta> getSemesterById(String id) {
-        return semesterMetaRepository.findById(id);
+
+    public SemesterMeta getSemesterMetaById(String id) {
+        return semesterMetaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("SemesterMeta not found with id: " + id));
     }
-    
-    public List<SemesterMeta> getSemestersBySeason(SemesterMeta.Season season) {
+
+    @Transactional
+    public SemesterMeta createSemesterMeta(SemesterMeta semesterMeta) {
+        if (semesterMeta.getId() == null) {
+            semesterMeta.setId(UUID.randomUUID().toString());
+        }
+        return semesterMetaRepository.save(semesterMeta);
+    }
+
+    @Transactional
+    public SemesterMeta updateSemesterMeta(String id, SemesterMeta metaDetails) {
+        SemesterMeta meta = getSemesterMetaById(id);
+        meta.setName(metaDetails.getName());
+        meta.setShortLabel(metaDetails.getShortLabel());
+        meta.setLabel(metaDetails.getLabel());
+        meta.setSeason(metaDetails.getSeason());
+        meta.setCalYear(metaDetails.getCalYear());
+        meta.setStart(metaDetails.getStart());
+        meta.setEnd(metaDetails.getEnd());
+        meta.setExamPeriodStart(metaDetails.getExamPeriodStart());
+        meta.setExamPeriodEnd(metaDetails.getExamPeriodEnd());
+        meta.setStatus(metaDetails.getStatus());
+        return semesterMetaRepository.save(meta);
+    }
+
+    @Transactional
+    public void deleteSemesterMeta(String id) {
+        semesterMetaRepository.deleteById(id);
+    }
+
+    public List<SemesterMeta> getSemesterMetasBySeason(SemesterMeta.Season season) {
         return semesterMetaRepository.findBySeason(season);
     }
-    
-    public List<SemesterMeta> getSemestersByYear(Integer calYear) {
+
+    public List<SemesterMeta> getSemesterMetasByCalYear(Integer calYear) {
         return semesterMetaRepository.findByCalYear(calYear);
     }
-    
-    public List<SemesterMeta> getActiveSemesters() {
-        return semesterMetaRepository.findByStatus(SemesterMeta.SemesterStatus.current);
+
+    public List<SemesterMeta> getSemesterMetasByStatus(SemesterMeta.SemesterStatus status) {
+        return semesterMetaRepository.findByStatus(status);
     }
-    
-    @Transactional
-    public SemesterMeta createSemester(SemesterMeta semester) {
-        return semesterMetaRepository.save(semester);
-    }
-    
-    @Transactional
-    public SemesterMeta updateSemester(String id, SemesterMeta semesterDetails) {
-        SemesterMeta semester = semesterMetaRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Semester not found"));
-        
-        if (semesterDetails.getName() != null) semester.setName(semesterDetails.getName());
-        if (semesterDetails.getLabel() != null) semester.setLabel(semesterDetails.getLabel());
-        if (semesterDetails.getSeason() != null) semester.setSeason(semesterDetails.getSeason());
-        if (semesterDetails.getCalYear() != null) semester.setCalYear(semesterDetails.getCalYear());
-        if (semesterDetails.getStart() != null) semester.setStart(semesterDetails.getStart());
-        if (semesterDetails.getEnd() != null) semester.setEnd(semesterDetails.getEnd());
-        if (semesterDetails.getStatus() != null) semester.setStatus(semesterDetails.getStatus());
-        
-        return semesterMetaRepository.save(semester);
-    }
-    
-    @Transactional
-    public void deleteSemester(String id) {
-        semesterMetaRepository.deleteById(id);
+
+    public SemesterMeta getSemesterMetaByLabelAndCalYear(String label, Integer calYear) {
+        return semesterMetaRepository.findByLabelAndCalYear(label, calYear)
+                .orElseThrow(() -> new RuntimeException("SemesterMeta not found"));
     }
 }

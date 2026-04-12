@@ -1,51 +1,59 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ExamRegistrationDTO;
+import com.example.demo.model.ExamRegistration;
 import com.example.demo.service.ExamRegistrationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/exam-registrations")
-@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class ExamRegistrationController {
-    
-    @Autowired
-    private ExamRegistrationService service;
-    
+    private final ExamRegistrationService examRegistrationService;
+
     @GetMapping
-    public ResponseEntity<List<ExamRegistrationDTO>> getAll() {
-        return ResponseEntity.ok(service.getAllExamRegistrations());
+    public ResponseEntity<List<ExamRegistration>> getAllExamRegistrations() {
+        return ResponseEntity.ok(examRegistrationService.getAllExamRegistrations());
     }
-    
+
     @GetMapping("/{id}")
-    public ResponseEntity<ExamRegistrationDTO> getById(@PathVariable String id) {
-        return service.getExamRegistrationById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ExamRegistration> getExamRegistrationById(@PathVariable String id) {
+        return ResponseEntity.ok(examRegistrationService.getExamRegistrationById(id));
     }
-    
-    @GetMapping("/student/{studentId}")
-    public ResponseEntity<List<ExamRegistrationDTO>> getByStudent(@PathVariable String studentId) {
-        return ResponseEntity.ok(service.getByStudentId(studentId));
-    }
-    
-    @GetMapping("/exam/{examId}")
-    public ResponseEntity<List<ExamRegistrationDTO>> getByExam(@PathVariable String examId) {
-        return ResponseEntity.ok(service.getByExamId(examId));
-    }
-    
+
     @PostMapping
-    public ResponseEntity<ExamRegistrationDTO> create(@RequestBody ExamRegistrationDTO dto) {
-        return new ResponseEntity<>(service.createExamRegistration(dto), HttpStatus.CREATED);
+    public ResponseEntity<ExamRegistration> createExamRegistration(@RequestBody ExamRegistration registration) {
+        return new ResponseEntity<>(examRegistrationService.createExamRegistration(registration), HttpStatus.CREATED);
     }
-    
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ExamRegistration> updateExamRegistration(@PathVariable String id, @RequestBody ExamRegistration registration) {
+        return ResponseEntity.ok(examRegistrationService.updateExamRegistration(id, registration));
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        service.deleteExamRegistration(id);
+    public ResponseEntity<Void> deleteExamRegistration(@PathVariable String id) {
+        examRegistrationService.deleteExamRegistration(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/student/{studentId}")
+    public ResponseEntity<List<ExamRegistration>> getRegistrationsByStudentId(@PathVariable String studentId) {
+        return ResponseEntity.ok(examRegistrationService.getRegistrationsByStudentId(studentId));
+    }
+
+    @GetMapping("/exam/{examId}")
+    public ResponseEntity<List<ExamRegistration>> getRegistrationsByExamId(@PathVariable String examId) {
+        return ResponseEntity.ok(examRegistrationService.getRegistrationsByExamId(examId));
+    }
+
+    @GetMapping("/student/{studentId}/exam/{examId}")
+    public ResponseEntity<ExamRegistration> getRegistrationByStudentIdAndExamId(
+            @PathVariable String studentId, @PathVariable String examId) {
+        return ResponseEntity.ok(examRegistrationService.getRegistrationByStudentIdAndExamId(studentId, examId));
     }
 }
