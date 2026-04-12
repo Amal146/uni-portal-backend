@@ -29,6 +29,6 @@ public class CourseLecturer {
     private Role role;
     
     public enum Role {
-        lecturer, coordinator
+        primary, secondary , coordinator
     }
 }

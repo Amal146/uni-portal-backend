@@ -1,7 +1,6 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Module;
-import com.example.demo.model.Module.ModuleType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,21 +11,46 @@ import java.util.Optional;
 @Repository
 public interface ModuleRepository extends JpaRepository<Module, String> {
     
+    // Find modules by programme id (programme is an object, so use programme.id)
     List<Module> findByProgrammeId(String programmeId);
     
-    // Fixed: Use nested property for moduleCoordinator id
-    List<Module> findByModuleCoordinatorId(String lecturerId);
+    // Find modules by coordinator id (coordinator is a Lecturer object)
+    List<Module> findByCoordinatorId(String lecturerId);
     
-    // Add missing methods referenced in your service
-    Optional<Module> findByModuleCode(String moduleCode);
+    // Find modules by type (type is now a String, not ModuleType enum)
+    List<Module> findByType(String type);
     
-    List<Module> findByType(ModuleType type);
-    
-    @Query("SELECT SUM(m.ects) FROM Module m WHERE m.programme.id = :programmeId")
-    Long sumEctsByProgrammeId(@Param("programmeId") String programmeId);
-    
+    // Search modules by name, shortName, or type
     @Query("SELECT m FROM Module m WHERE LOWER(m.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-           "OR LOWER(m.moduleCode) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-           "OR LOWER(m.content) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+           "OR LOWER(m.shortName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+           "OR LOWER(m.type) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Module> searchModules(@Param("keyword") String keyword);
+    
+    // Find modules by total ECTS range
+    List<Module> findByTotalEctsBetween(Integer minEcts, Integer maxEcts);
+    
+    // Find modules with no coordinator assigned
+    List<Module> findByCoordinatorIsNull();
+    
+    // Find modules by coordinator id and type
+    List<Module> findByCoordinatorIdAndType(String lecturerId, String type);
+    
+    // Count modules by type
+    @Query("SELECT m.type, COUNT(m) FROM Module m GROUP BY m.type")
+    List<Object[]> countModulesByType();
+    
+    // Get total ECTS sum for a programme (using totalEcts field)
+    @Query("SELECT SUM(m.totalEcts) FROM Module m WHERE m.programme.id = :programmeId")
+    Long sumTotalEctsByProgrammeId(@Param("programmeId") String programmeId);
+    
+    // Find modules by programme id and type
+    List<Module> findByProgrammeIdAndType(String programmeId, String type);
+    
+    // Find modules that have courses
+    @Query("SELECT DISTINCT m FROM Module m JOIN m.courses c")
+    List<Module> findModulesWithCourses();
+    
+    // Find modules that have exams
+    @Query("SELECT DISTINCT m FROM Module m JOIN m.exams e")
+    List<Module> findModulesWithExams();
 }

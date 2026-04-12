@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Course;
+import com.example.demo.model.Exam;
 import com.example.demo.model.Module;
 import com.example.demo.repository.ModuleRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,20 +37,18 @@ public class ModuleService {
     @Transactional
     public Module updateModule(String id, Module moduleDetails) {
         Module module = getModuleById(id);
-        module.setModuleCode(moduleDetails.getModuleCode());
+        
+        // Update only the fields that exist in the new model
         module.setName(moduleDetails.getName());
-        module.setEcts(moduleDetails.getEcts());
-        module.setType(moduleDetails.getType());
-        module.setNiveau(moduleDetails.getNiveau());
-        module.setTaughtUnitsPerSemester(moduleDetails.getTaughtUnitsPerSemester());
-        module.setPrivateStudyTime(moduleDetails.getPrivateStudyTime());
+        module.setShortName(moduleDetails.getShortName());
         module.setProgramme(moduleDetails.getProgramme());
-        module.setModuleCoordinator(moduleDetails.getModuleCoordinator());
-        module.setExamProcedure(moduleDetails.getExamProcedure());
-        module.setRequirements(moduleDetails.getRequirements());
-        module.setContent(moduleDetails.getContent());
-        module.setLearningOutcomes(moduleDetails.getLearningOutcomes());
-        module.setLiterature(moduleDetails.getLiterature());
+        module.setType(moduleDetails.getType());
+        module.setTotalEcts(moduleDetails.getTotalEcts());
+        module.setCoordinator(moduleDetails.getCoordinator());
+        
+        // Note: courses and exams are managed separately through their own services
+        // to avoid overriding the collections
+        
         return moduleRepository.save(module);
     }
 
@@ -63,23 +63,64 @@ public class ModuleService {
     }
 
     public List<Module> getModulesByCoordinatorId(String lecturerId) {
-        return moduleRepository.findByModuleCoordinatorId(lecturerId);
+        return moduleRepository.findByCoordinatorId(lecturerId);
     }
 
-    public Module getModuleByModuleCode(String moduleCode) {
-        return moduleRepository.findByModuleCode(moduleCode)
-                .orElseThrow(() -> new RuntimeException("Module not found with code: " + moduleCode));
-    }
-
-    public List<Module> getModulesByType(Module.ModuleType type) {
+    public List<Module> getModulesByType(String type) {
         return moduleRepository.findByType(type);
     }
 
     public Long getTotalEctsByProgrammeId(String programmeId) {
-        return moduleRepository.sumEctsByProgrammeId(programmeId);
+        return moduleRepository.sumTotalEctsByProgrammeId(programmeId);
     }
 
     public List<Module> searchModules(String keyword) {
         return moduleRepository.searchModules(keyword);
+    }
+    
+    // Additional useful service methods based on the new repository methods
+    
+    public List<Module> getModulesByTotalEctsRange(Integer minEcts, Integer maxEcts) {
+        return moduleRepository.findByTotalEctsBetween(minEcts, maxEcts);
+    }
+    
+    public List<Module> getModulesWithoutCoordinator() {
+        return moduleRepository.findByCoordinatorIsNull();
+    }
+    
+    public List<Module> getModulesByCoordinatorAndType(String lecturerId, String type) {
+        return moduleRepository.findByCoordinatorIdAndType(lecturerId, type);
+    }
+    
+    public List<Object[]> getModuleCountByType() {
+        return moduleRepository.countModulesByType();
+    }
+    
+    public List<Module> getModulesByProgrammeAndType(String programmeId, String type) {
+        return moduleRepository.findByProgrammeIdAndType(programmeId, type);
+    }
+    
+    public List<Module> getModulesWithCourses() {
+        return moduleRepository.findModulesWithCourses();
+    }
+    
+    public List<Module> getModulesWithExams() {
+        return moduleRepository.findModulesWithExams();
+    }
+    
+    // Helper method to add a course to a module (transactional)
+    @Transactional
+    public Module addCourseToModule(String moduleId, Course course) {
+        Module module = getModuleById(moduleId);
+        module.addCourse(course);
+        return moduleRepository.save(module);
+    }
+    
+    // Helper method to add an exam to a module (transactional)
+    @Transactional
+    public Module addExamToModule(String moduleId, Exam exam) {
+        Module module = getModuleById(moduleId);
+        module.addExam(exam);
+        return moduleRepository.save(module);
     }
 }

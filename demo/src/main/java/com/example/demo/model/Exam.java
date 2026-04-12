@@ -37,7 +37,7 @@ public class Exam {
     @Column(nullable = false)
     private LocalDate date;
     
-    private LocalTime time;
+    private String time;
     
     private Integer duration;
     

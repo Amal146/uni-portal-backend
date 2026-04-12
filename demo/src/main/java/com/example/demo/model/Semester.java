@@ -1,10 +1,10 @@
 package com.example.demo.model;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -15,24 +15,36 @@ public class Semester {
     @Id
     private String id;
     
-    @ManyToOne
-    @JoinColumn(name = "student_id")
-    private Student student;
-    
-    private Integer index;
+    private String name;
+    private String shortLabel;
+    private String label;
     
     @Enumerated(EnumType.STRING)
     private Season season;
     
-    private String label;
-    private String shortLabel;
     private Integer calYear;
-    
-    @ManyToOne
-    @JoinColumn(name = "semester_meta_id")
-    private SemesterMeta semesterMeta;
+    private LocalDate start;
+    private LocalDate end;
+    private LocalDate examPeriodStart;
+    private LocalDate examPeriodEnd;
+    private String status;
     
     public enum Season {
         Winter, Summer
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
