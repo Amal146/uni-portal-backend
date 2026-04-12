@@ -25,8 +25,9 @@ public class Lecturer {
     @Enumerated(EnumType.STRING)
     private LecturerRole role;
     
-    @OneToMany(mappedBy = "moduleCoordinator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Module> coordinatedModules = new ArrayList<>();
+    @OneToMany
+    @JoinColumn(name = "module_coordinator_id")
+    private List<Module> coordinatedModules;
     
     @OneToMany(mappedBy = "lecturer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CourseLecturer> courseLecturers = new ArrayList<>();
