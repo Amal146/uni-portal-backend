@@ -5,6 +5,10 @@ RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY --from=build /app/demo/target/*.jar app.jar
-EXPOSE 8080
+COPY --from=build /app/target/*.jar app.jar  
+
+# Fix: /app/target (pom in root)
+EXPOSE $PORT  
+
+# Render uses $PORT
 ENTRYPOINT ["java", "-jar", "app.jar"]
