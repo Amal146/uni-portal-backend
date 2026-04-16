@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.StudentDTO;
 import com.example.demo.model.Student;
 import com.example.demo.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -72,5 +73,54 @@ public class StudentService {
     public Student getStudentByFullName(String firstName, String lastName) {
         return studentRepository.findByFirstNameAndLastName(firstName, lastName)
                 .orElseThrow(() -> new RuntimeException("Student not found with name: " + firstName + " " + lastName));
+    }
+
+    public StudentDTO toDTO(Student student) {
+        StudentDTO dto = new StudentDTO();
+        dto.setId(student.getId());
+        dto.setUserId(student.getUserId());
+        dto.setMatricNumber(student.getMatricNumber());
+        dto.setFirstName(student.getFirstName());
+        dto.setLastName(student.getLastName());
+        dto.setEmail(student.getEmail());
+        dto.setProgrammeId(student.getProgramme() != null ? student.getProgramme().getId() : null);
+        dto.setStartSemester(student.getStartSemester());
+        dto.setStartSeason(student.getStartSeason() != null ? student.getStartSeason().name() : null);
+        dto.setStartYear(student.getStartYear());
+        dto.setMaxYears(student.getMaxYears());
+        dto.setMinEctsPerYear(student.getMinEctsPerYear());
+        dto.setStatus(student.getStatus() != null ? student.getStatus().name() : null);
+        dto.setRole(student.getRole() != null ? student.getRole().name() : null);
+        return dto;
+    }
+
+    public StudentDTO getStudentDTOById(String id) {
+        return toDTO(getStudentById(id));
+    }
+
+    public List<StudentDTO> getAllStudentDTOs() {
+        return studentRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    public StudentDTO getStudentDTOByEmail(String email) {
+        return toDTO(getStudentByEmail(email));
+    }
+
+    public StudentDTO getStudentDTOByFullName(String firstName, String lastName) {
+        return toDTO(getStudentByFullName(firstName, lastName));
+    }
+
+    public List<StudentDTO> getStudentDTOsByProgrammeId(String programmeId) {
+        return studentRepository.findByProgrammeId(programmeId).stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    public List<StudentDTO> getStudentDTOsByLastName(String lastName) {
+        return studentRepository.findByLastName(lastName).stream()
+                .map(this::toDTO)
+                .toList();
     }
 }

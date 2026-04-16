@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.ElectiveSlot;
+import com.example.demo.dto.ElectiveSlotDTO;
 import com.example.demo.service.ElectiveSlotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,22 +16,22 @@ public class ElectiveSlotController {
     private final ElectiveSlotService electiveSlotService;
 
     @GetMapping
-    public ResponseEntity<List<ElectiveSlot>> getAllElectiveSlots() {
+    public ResponseEntity<List<ElectiveSlotDTO>> getAllElectiveSlots() {
         return ResponseEntity.ok(electiveSlotService.getAllElectiveSlots());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ElectiveSlot> getElectiveSlotById(@PathVariable String id) {
+    public ResponseEntity<ElectiveSlotDTO> getElectiveSlotById(@PathVariable String id) {
         return ResponseEntity.ok(electiveSlotService.getElectiveSlotById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ElectiveSlot> createElectiveSlot(@RequestBody ElectiveSlot slot) {
+    public ResponseEntity<ElectiveSlotDTO> createElectiveSlot(@RequestBody ElectiveSlotDTO slot) {
         return new ResponseEntity<>(electiveSlotService.createElectiveSlot(slot), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ElectiveSlot> updateElectiveSlot(@PathVariable String id, @RequestBody ElectiveSlot slot) {
+    public ResponseEntity<ElectiveSlotDTO> updateElectiveSlot(@PathVariable String id, @RequestBody ElectiveSlotDTO slot) {
         return ResponseEntity.ok(electiveSlotService.updateElectiveSlot(id, slot));
     }
 
@@ -42,24 +42,24 @@ public class ElectiveSlotController {
     }
 
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<List<ElectiveSlot>> getSlotsByStudentId(@PathVariable String studentId) {
+    public ResponseEntity<List<ElectiveSlotDTO>> getSlotsByStudentId(@PathVariable String studentId) {
         return ResponseEntity.ok(electiveSlotService.getSlotsByStudentId(studentId));
     }
 
     @GetMapping("/student/{studentId}/type/{type}")
-    public ResponseEntity<List<ElectiveSlot>> getSlotsByStudentIdAndType(
-            @PathVariable String studentId, @PathVariable ElectiveSlot.ElectiveType type) {
+    public ResponseEntity<List<ElectiveSlotDTO>> getSlotsByStudentIdAndType(
+            @PathVariable String studentId, @PathVariable String type) {
         return ResponseEntity.ok(electiveSlotService.getSlotsByStudentIdAndType(studentId, type));
     }
 
     @GetMapping("/student/{studentId}/status/{status}")
-    public ResponseEntity<List<ElectiveSlot>> getSlotsByStudentIdAndStatus(
-            @PathVariable String studentId, @PathVariable ElectiveSlot.ElectiveStatus status) {
+    public ResponseEntity<List<ElectiveSlotDTO>> getSlotsByStudentIdAndStatus(
+            @PathVariable String studentId, @PathVariable String status) {
         return ResponseEntity.ok(electiveSlotService.getSlotsByStudentIdAndStatus(studentId, status));
     }
 
     @GetMapping("/course/{courseId}")
-    public ResponseEntity<List<ElectiveSlot>> getSlotsBySelectedCourseId(@PathVariable String courseId) {
+    public ResponseEntity<List<ElectiveSlotDTO>> getSlotsBySelectedCourseId(@PathVariable String courseId) {
         return ResponseEntity.ok(electiveSlotService.getSlotsBySelectedCourseId(courseId));
     }
 }

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Registration;
+import com.example.demo.dto.RegistrationDTO;
 import com.example.demo.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Updated RegistrationController that returns DTOs
 @RestController
 @RequestMapping("/registrations")
 @RequiredArgsConstructor
@@ -16,22 +17,22 @@ public class RegistrationController {
     private final RegistrationService registrationService;
 
     @GetMapping
-    public ResponseEntity<List<Registration>> getAllRegistrations() {
+    public ResponseEntity<List<RegistrationDTO>> getAllRegistrations() {
         return ResponseEntity.ok(registrationService.getAllRegistrations());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Registration> getRegistrationById(@PathVariable String id) {
+    public ResponseEntity<RegistrationDTO> getRegistrationById(@PathVariable String id) {
         return ResponseEntity.ok(registrationService.getRegistrationById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Registration> createRegistration(@RequestBody Registration registration) {
+    public ResponseEntity<RegistrationDTO> createRegistration(@RequestBody RegistrationDTO registration) {
         return new ResponseEntity<>(registrationService.createRegistration(registration), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Registration> updateRegistration(@PathVariable String id, @RequestBody Registration registration) {
+    public ResponseEntity<RegistrationDTO> updateRegistration(@PathVariable String id, @RequestBody RegistrationDTO registration) {
         return ResponseEntity.ok(registrationService.updateRegistration(id, registration));
     }
 
@@ -42,28 +43,28 @@ public class RegistrationController {
     }
 
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<List<Registration>> getRegistrationsByStudentId(@PathVariable String studentId) {
+    public ResponseEntity<List<RegistrationDTO>> getRegistrationsByStudentId(@PathVariable String studentId) {
         return ResponseEntity.ok(registrationService.getRegistrationsByStudentId(studentId));
     }
 
     @GetMapping("/course/{courseId}")
-    public ResponseEntity<List<Registration>> getRegistrationsByCourseId(@PathVariable String courseId) {
+    public ResponseEntity<List<RegistrationDTO>> getRegistrationsByCourseId(@PathVariable String courseId) {
         return ResponseEntity.ok(registrationService.getRegistrationsByCourseId(courseId));
     }
 
     @GetMapping("/period/{periodId}")
-    public ResponseEntity<List<Registration>> getRegistrationsByRegistrationPeriodId(@PathVariable String periodId) {
+    public ResponseEntity<List<RegistrationDTO>> getRegistrationsByRegistrationPeriodId(@PathVariable String periodId) {
         return ResponseEntity.ok(registrationService.getRegistrationsByRegistrationPeriodId(periodId));
     }
 
     @GetMapping("/student/{studentId}/status/{status}")
-    public ResponseEntity<List<Registration>> getRegistrationsByStudentIdAndStatus(
-            @PathVariable String studentId, @PathVariable Registration.RegistrationStatus status) {
+    public ResponseEntity<List<RegistrationDTO>> getRegistrationsByStudentIdAndStatus(
+            @PathVariable String studentId, @PathVariable String status) {
         return ResponseEntity.ok(registrationService.getRegistrationsByStudentIdAndStatus(studentId, status));
     }
 
     @GetMapping("/student/{studentId}/course/{courseId}")
-    public ResponseEntity<Registration> getRegistrationByStudentIdAndCourseId(
+    public ResponseEntity<RegistrationDTO> getRegistrationByStudentIdAndCourseId(
             @PathVariable String studentId, @PathVariable String courseId) {
         return ResponseEntity.ok(registrationService.getRegistrationByStudentIdAndCourseId(studentId, courseId));
     }

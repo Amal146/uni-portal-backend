@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.StudentDTO;
 import com.example.demo.model.Student;
 import com.example.demo.service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +17,13 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping
-    public ResponseEntity<List<Student>> getAllStudents() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+    public ResponseEntity<List<StudentDTO>> getAllStudents() {
+        return ResponseEntity.ok(studentService.getAllStudentDTOs());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable String id) {
-        return ResponseEntity.ok(studentService.getStudentById(id));
+    public ResponseEntity<StudentDTO> getStudentById(@PathVariable String id) {
+        return ResponseEntity.ok(studentService.getStudentDTOById(id));
     }
 
     @PostMapping
@@ -42,23 +43,23 @@ public class StudentController {
     }
 
     @GetMapping("/programme/{programmeId}")
-    public ResponseEntity<List<Student>> getStudentsByProgrammeId(@PathVariable String programmeId) {
-        return ResponseEntity.ok(studentService.getStudentsByProgrammeId(programmeId));
+    public ResponseEntity<List<StudentDTO>> getStudentsByProgrammeId(@PathVariable String programmeId) {
+        return ResponseEntity.ok(studentService.getStudentDTOsByProgrammeId(programmeId));
     }
 
     @GetMapping("/lastname/{lastName}")
-    public ResponseEntity<List<Student>> getStudentsByLastName(@PathVariable String lastName) {
-        return ResponseEntity.ok(studentService.getStudentsByLastName(lastName));
+    public ResponseEntity<List<StudentDTO>> getStudentsByLastName(@PathVariable String lastName) {
+        return ResponseEntity.ok(studentService.getStudentDTOsByLastName(lastName));
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(studentService.getStudentByEmail(email));
+    public ResponseEntity<StudentDTO> getStudentByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(studentService.getStudentDTOByEmail(email));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Student> getStudentByFullName(
+    public ResponseEntity<StudentDTO> getStudentByFullName(
             @RequestParam String firstName, @RequestParam String lastName) {
-        return ResponseEntity.ok(studentService.getStudentByFullName(firstName, lastName));
+        return ResponseEntity.ok(studentService.getStudentDTOByFullName(firstName, lastName));
     }
 }

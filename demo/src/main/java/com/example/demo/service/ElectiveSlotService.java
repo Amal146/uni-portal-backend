@@ -1,49 +1,56 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Course;
 import com.example.demo.model.ElectiveSlot;
+import com.example.demo.model.Semester;
+import com.example.demo.model.Student;
 import com.example.demo.repository.ElectiveSlotRepository;
+import com.example.demo.repository.SemesterRepository;
+import com.example.demo.repository.StudentRepository;
+import com.example.demo.repository.CourseRepository;
+import com.example.demo.dto.ElectiveSlotDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
+// Updated ElectiveSlotService that returns DTOs
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ElectiveSlotService {
     private final ElectiveSlotRepository electiveSlotRepository;
+    private final StudentRepository studentRepository;
+    private final SemesterRepository semesterRepository;
+    private final CourseRepository courseRepository;
 
-    public List<ElectiveSlot> getAllElectiveSlots() {
-        return electiveSlotRepository.findAll();
+    public List<ElectiveSlotDTO> getAllElectiveSlots() {
+        return ElectiveSlotDTO.fromEntities(electiveSlotRepository.findAll());
     }
 
-    public ElectiveSlot getElectiveSlotById(String id) {
-        return electiveSlotRepository.findById(id)
+    public ElectiveSlotDTO getElectiveSlotById(String id) {
+        ElectiveSlot electiveSlot = electiveSlotRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("ElectiveSlot not found with id: " + id));
+        return ElectiveSlotDTO.fromEntity(electiveSlot);
     }
 
     @Transactional
-    public ElectiveSlot createElectiveSlot(ElectiveSlot electiveSlot) {
+    public ElectiveSlotDTO createElectiveSlot(ElectiveSlotDTO electiveSlotDTO) {
+        ElectiveSlot electiveSlot = convertToEntity(electiveSlotDTO);
         if (electiveSlot.getId() == null) {
-            electiveSlot.setId(UUID.randomUUID().toString());
+            electiveSlot.setId(java.util.UUID.randomUUID().toString());
         }
-        return electiveSlotRepository.save(electiveSlot);
+        ElectiveSlot saved = electiveSlotRepository.save(electiveSlot);
+        return ElectiveSlotDTO.fromEntity(saved);
     }
 
     @Transactional
-    public ElectiveSlot updateElectiveSlot(String id, ElectiveSlot slotDetails) {
-        ElectiveSlot slot = getElectiveSlotById(id);
-        slot.setStudent(slotDetails.getStudent());
-        slot.setType(slotDetails.getType());
-        slot.setLabel(slotDetails.getLabel());
-        slot.setSlotNumber(slotDetails.getSlotNumber());
-        slot.setPlannedSlot(slotDetails.getPlannedSlot());
-        slot.setPlannedSemester(slotDetails.getPlannedSemester());
-        slot.setSelectedCourse(slotDetails.getSelectedCourse());
-        slot.setStatus(slotDetails.getStatus());
-        return electiveSlotRepository.save(slot);
+    public ElectiveSlotDTO updateElectiveSlot(String id, ElectiveSlotDTO slotDetailsDTO) {
+        ElectiveSlot slot = getElectiveSlotEntityById(id);
+        updateElectiveSlotEntity(slot, slotDetailsDTO);
+        ElectiveSlot updated = electiveSlotRepository.save(slot);
+        return ElectiveSlotDTO.fromEntity(updated);
     }
 
     @Transactional
@@ -51,19 +58,105 @@ public class ElectiveSlotService {
         electiveSlotRepository.deleteById(id);
     }
 
-    public List<ElectiveSlot> getSlotsByStudentId(String studentId) {
-        return electiveSlotRepository.findByStudentId(studentId);
+    public List<ElectiveSlotDTO> getSlotsByStudentId(String studentId) {
+        return ElectiveSlotDTO.fromEntities(electiveSlotRepository.findByStudentId(studentId));
     }
 
-    public List<ElectiveSlot> getSlotsByStudentIdAndType(String studentId, ElectiveSlot.ElectiveType type) {
-        return electiveSlotRepository.findByStudentIdAndType(studentId, type);
+    public List<ElectiveSlotDTO> getSlotsByStudentIdAndType(String studentId, String type) {
+        ElectiveSlot.ElectiveType typeEnum = ElectiveSlot.ElectiveType.valueOf(type);
+        return ElectiveSlotDTO.fromEntities(electiveSlotRepository.findByStudentIdAndType(studentId, typeEnum));
     }
 
-    public List<ElectiveSlot> getSlotsByStudentIdAndStatus(String studentId, ElectiveSlot.ElectiveStatus status) {
-        return electiveSlotRepository.findByStudentIdAndStatus(studentId, status);
+    public List<ElectiveSlotDTO> getSlotsByStudentIdAndStatus(String studentId, String status) {
+        ElectiveSlot.ElectiveStatus statusEnum = ElectiveSlot.ElectiveStatus.valueOf(status);
+        return ElectiveSlotDTO.fromEntities(electiveSlotRepository.findByStudentIdAndStatus(studentId, statusEnum));
     }
 
-    public List<ElectiveSlot> getSlotsBySelectedCourseId(String courseId) {
-        return electiveSlotRepository.findBySelectedCourseId(courseId);
+    public List<ElectiveSlotDTO> getSlotsBySelectedCourseId(String courseId) {
+        return ElectiveSlotDTO.fromEntities(electiveSlotRepository.findBySelectedCourseId(courseId));
+    }
+    
+    // Helper methods for internal use
+    private ElectiveSlot getElectiveSlotEntityById(String id) {
+        return electiveSlotRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ElectiveSlot not found with id: " + id));
+    }
+    
+    private ElectiveSlot convertToEntity(ElectiveSlotDTO dto) {
+        ElectiveSlot electiveSlot = new ElectiveSlot();
+        electiveSlot.setId(dto.getId());
+        electiveSlot.setLabel(dto.getLabel());
+        electiveSlot.setSlotNumber(dto.getSlotNumber());
+        electiveSlot.setPlannedSlot(dto.getPlannedSlot());
+        
+        // Set Student if studentId is provided
+        if (dto.getStudentId() != null) {
+            Student student = studentRepository.findById(dto.getStudentId())
+                    .orElseThrow(() -> new RuntimeException("Student not found with id: " + dto.getStudentId()));
+            electiveSlot.setStudent(student);
+        }
+        
+        // Set Type if type is provided
+        if (dto.getType() != null) {
+            electiveSlot.setType(ElectiveSlot.ElectiveType.valueOf(dto.getType()));
+        }
+        
+        // Set PlannedSemester if plannedSemesterId is provided
+        if (dto.getPlannedSemesterId() != null) {
+            Semester semester = semesterRepository.findById(dto.getPlannedSemesterId())
+                    .orElseThrow(() -> new RuntimeException("Semester not found with id: " + dto.getPlannedSemesterId()));
+            electiveSlot.setPlannedSemester(semester);
+        }
+        
+        // Set SelectedCourse if selectedCourseId is provided
+        if (dto.getSelectedCourseId() != null) {
+            Course course = courseRepository.findById(dto.getSelectedCourseId())
+                    .orElseThrow(() -> new RuntimeException("Course not found with id: " + dto.getSelectedCourseId()));
+            electiveSlot.setSelectedCourse(course);
+        }
+        
+        // Set Status if status is provided
+        if (dto.getStatus() != null) {
+            electiveSlot.setStatus(ElectiveSlot.ElectiveStatus.valueOf(dto.getStatus()));
+        }
+        
+        return electiveSlot;
+    }
+    
+    private void updateElectiveSlotEntity(ElectiveSlot electiveSlot, ElectiveSlotDTO dto) {
+        electiveSlot.setLabel(dto.getLabel());
+        electiveSlot.setSlotNumber(dto.getSlotNumber());
+        electiveSlot.setPlannedSlot(dto.getPlannedSlot());
+        
+        // Update Student if studentId is provided
+        if (dto.getStudentId() != null) {
+            Student student = studentRepository.findById(dto.getStudentId())
+                    .orElseThrow(() -> new RuntimeException("Student not found with id: " + dto.getStudentId()));
+            electiveSlot.setStudent(student);
+        }
+        
+        // Update Type if type is provided
+        if (dto.getType() != null) {
+            electiveSlot.setType(ElectiveSlot.ElectiveType.valueOf(dto.getType()));
+        }
+        
+        // Update PlannedSemester if plannedSemesterId is provided
+        if (dto.getPlannedSemesterId() != null) {
+            Semester semester = semesterRepository.findById(dto.getPlannedSemesterId())
+                    .orElseThrow(() -> new RuntimeException("Semester not found with id: " + dto.getPlannedSemesterId()));
+            electiveSlot.setPlannedSemester(semester);
+        }
+        
+        // Update SelectedCourse if selectedCourseId is provided
+        if (dto.getSelectedCourseId() != null) {
+            Course course = courseRepository.findById(dto.getSelectedCourseId())
+                    .orElseThrow(() -> new RuntimeException("Course not found with id: " + dto.getSelectedCourseId()));
+            electiveSlot.setSelectedCourse(course);
+        }
+        
+        // Update Status if status is provided
+        if (dto.getStatus() != null) {
+            electiveSlot.setStatus(ElectiveSlot.ElectiveStatus.valueOf(dto.getStatus()));
+        }
     }
 }

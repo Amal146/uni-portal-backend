@@ -1,46 +1,53 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.ElectiveSubstitutionRuleDTO;
+import com.example.demo.model.ElectiveRule;
 import com.example.demo.model.ElectiveSubstitutionRule;
+import com.example.demo.model.Programme;
+import com.example.demo.repository.ElectiveRuleRepository;
 import com.example.demo.repository.ElectiveSubstitutionRuleRepository;
+import com.example.demo.repository.ProgrammeRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ElectiveSubstitutionRuleService {
     private final ElectiveSubstitutionRuleRepository substitutionRuleRepository;
+    private final ElectiveRuleRepository electiveRuleRepository;
+    private final ProgrammeRepository programmeRepository;
 
-    public List<ElectiveSubstitutionRule> getAllSubstitutionRules() {
-        return substitutionRuleRepository.findAll();
+    public List<ElectiveSubstitutionRuleDTO> getAllSubstitutionRules() {
+        return ElectiveSubstitutionRuleDTO.fromEntities(substitutionRuleRepository.findAll());
     }
 
-    public ElectiveSubstitutionRule getSubstitutionRuleById(String id) {
-        return substitutionRuleRepository.findById(id)
+    public ElectiveSubstitutionRuleDTO getSubstitutionRuleById(String id) {
+        ElectiveSubstitutionRule rule = substitutionRuleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("ElectiveSubstitutionRule not found with id: " + id));
+        return ElectiveSubstitutionRuleDTO.fromEntity(rule);
     }
 
     @Transactional
-    public ElectiveSubstitutionRule createSubstitutionRule(ElectiveSubstitutionRule rule) {
+    public ElectiveSubstitutionRuleDTO createSubstitutionRule(ElectiveSubstitutionRuleDTO ruleDTO) {
+        ElectiveSubstitutionRule rule = convertToEntity(ruleDTO);
         if (rule.getId() == null) {
-            rule.setId(UUID.randomUUID().toString());
+            rule.setId(java.util.UUID.randomUUID().toString());
         }
-        return substitutionRuleRepository.save(rule);
+        ElectiveSubstitutionRule saved = substitutionRuleRepository.save(rule);
+        return ElectiveSubstitutionRuleDTO.fromEntity(saved);
     }
 
     @Transactional
-    public ElectiveSubstitutionRule updateSubstitutionRule(String id, ElectiveSubstitutionRule ruleDetails) {
-        ElectiveSubstitutionRule rule = getSubstitutionRuleById(id);
-        rule.setElectiveRule(ruleDetails.getElectiveRule());
-        rule.setProgramme(ruleDetails.getProgramme());
-        rule.setSubstituteType(ruleDetails.getSubstituteType());
-        rule.setMaxEcts(ruleDetails.getMaxEcts());
-        rule.setMaxCourses(ruleDetails.getMaxCourses());
-        return substitutionRuleRepository.save(rule);
+    public ElectiveSubstitutionRuleDTO updateSubstitutionRule(String id, ElectiveSubstitutionRuleDTO ruleDetailsDTO) {
+        ElectiveSubstitutionRule rule = getSubstitutionRuleEntityById(id);
+        updateSubstitutionRuleEntity(rule, ruleDetailsDTO);
+        ElectiveSubstitutionRule updated = substitutionRuleRepository.save(rule);
+        return ElectiveSubstitutionRuleDTO.fromEntity(updated);
     }
 
     @Transactional
@@ -48,11 +55,69 @@ public class ElectiveSubstitutionRuleService {
         substitutionRuleRepository.deleteById(id);
     }
 
-    public List<ElectiveSubstitutionRule> getRulesByElectiveRuleId(String electiveRuleId) {
-        return substitutionRuleRepository.findByElectiveRuleId(electiveRuleId);
+    public List<ElectiveSubstitutionRuleDTO> getRulesByElectiveRuleId(String electiveRuleId) {
+        return ElectiveSubstitutionRuleDTO.fromEntities(substitutionRuleRepository.findByElectiveRuleId(electiveRuleId));
     }
 
-    public List<ElectiveSubstitutionRule> getRulesByProgrammeId(String programmeId) {
-        return substitutionRuleRepository.findByProgrammeId(programmeId);
+    public List<ElectiveSubstitutionRuleDTO> getRulesByProgrammeId(String programmeId) {
+        return ElectiveSubstitutionRuleDTO.fromEntities(substitutionRuleRepository.findByProgrammeId(programmeId));
+    }
+    
+    // Helper methods for internal use
+    private ElectiveSubstitutionRule getSubstitutionRuleEntityById(String id) {
+        return substitutionRuleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ElectiveSubstitutionRule not found with id: " + id));
+    }
+    
+    private ElectiveSubstitutionRule convertToEntity(ElectiveSubstitutionRuleDTO dto) {
+        ElectiveSubstitutionRule rule = new ElectiveSubstitutionRule();
+        rule.setId(dto.getId());
+        rule.setMaxEcts(dto.getMaxEcts());
+        rule.setMaxCourses(dto.getMaxCourses());
+        
+        // Set ElectiveRule if electiveRuleId is provided
+        if (dto.getElectiveRuleId() != null) {
+            ElectiveRule electiveRule = electiveRuleRepository.findById(dto.getElectiveRuleId())
+                    .orElseThrow(() -> new RuntimeException("ElectiveRule not found with id: " + dto.getElectiveRuleId()));
+            rule.setElectiveRule(electiveRule);
+        }
+        
+        // Set Programme if programmeId is provided
+        if (dto.getProgrammeId() != null) {
+            Programme programme = programmeRepository.findById(dto.getProgrammeId())
+                    .orElseThrow(() -> new RuntimeException("Programme not found with id: " + dto.getProgrammeId()));
+            rule.setProgramme(programme);
+        }
+        
+        // Set SubstituteType if substituteType is provided
+        if (dto.getSubstituteType() != null) {
+            rule.setSubstituteType(ElectiveSubstitutionRule.SubstituteType.valueOf(dto.getSubstituteType()));
+        }
+        
+        return rule;
+    }
+    
+    private void updateSubstitutionRuleEntity(ElectiveSubstitutionRule rule, ElectiveSubstitutionRuleDTO dto) {
+        rule.setMaxEcts(dto.getMaxEcts());
+        rule.setMaxCourses(dto.getMaxCourses());
+        
+        // Update ElectiveRule if electiveRuleId is provided
+        if (dto.getElectiveRuleId() != null) {
+            ElectiveRule electiveRule = electiveRuleRepository.findById(dto.getElectiveRuleId())
+                    .orElseThrow(() -> new RuntimeException("ElectiveRule not found with id: " + dto.getElectiveRuleId()));
+            rule.setElectiveRule(electiveRule);
+        }
+        
+        // Update Programme if programmeId is provided
+        if (dto.getProgrammeId() != null) {
+            Programme programme = programmeRepository.findById(dto.getProgrammeId())
+                    .orElseThrow(() -> new RuntimeException("Programme not found with id: " + dto.getProgrammeId()));
+            rule.setProgramme(programme);
+        }
+        
+        // Update SubstituteType if substituteType is provided
+        if (dto.getSubstituteType() != null) {
+            rule.setSubstituteType(ElectiveSubstitutionRule.SubstituteType.valueOf(dto.getSubstituteType()));
+        }
     }
 }

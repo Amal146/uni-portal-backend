@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.ElectiveSubstitutionRule;
+import com.example.demo.dto.ElectiveSubstitutionRuleDTO;
 import com.example.demo.service.ElectiveSubstitutionRuleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,22 +16,22 @@ public class ElectiveSubstitutionRuleController {
     private final ElectiveSubstitutionRuleService substitutionRuleService;
 
     @GetMapping
-    public ResponseEntity<List<ElectiveSubstitutionRule>> getAllSubstitutionRules() {
+    public ResponseEntity<List<ElectiveSubstitutionRuleDTO>> getAllSubstitutionRules() {
         return ResponseEntity.ok(substitutionRuleService.getAllSubstitutionRules());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ElectiveSubstitutionRule> getSubstitutionRuleById(@PathVariable String id) {
+    public ResponseEntity<ElectiveSubstitutionRuleDTO> getSubstitutionRuleById(@PathVariable String id) {
         return ResponseEntity.ok(substitutionRuleService.getSubstitutionRuleById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ElectiveSubstitutionRule> createSubstitutionRule(@RequestBody ElectiveSubstitutionRule rule) {
+    public ResponseEntity<ElectiveSubstitutionRuleDTO> createSubstitutionRule(@RequestBody ElectiveSubstitutionRuleDTO rule) {
         return new ResponseEntity<>(substitutionRuleService.createSubstitutionRule(rule), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ElectiveSubstitutionRule> updateSubstitutionRule(@PathVariable String id, @RequestBody ElectiveSubstitutionRule rule) {
+    public ResponseEntity<ElectiveSubstitutionRuleDTO> updateSubstitutionRule(@PathVariable String id, @RequestBody ElectiveSubstitutionRuleDTO rule) {
         return ResponseEntity.ok(substitutionRuleService.updateSubstitutionRule(id, rule));
     }
 
@@ -42,12 +42,12 @@ public class ElectiveSubstitutionRuleController {
     }
 
     @GetMapping("/elective-rule/{electiveRuleId}")
-    public ResponseEntity<List<ElectiveSubstitutionRule>> getRulesByElectiveRuleId(@PathVariable String electiveRuleId) {
+    public ResponseEntity<List<ElectiveSubstitutionRuleDTO>> getRulesByElectiveRuleId(@PathVariable String electiveRuleId) {
         return ResponseEntity.ok(substitutionRuleService.getRulesByElectiveRuleId(electiveRuleId));
     }
 
     @GetMapping("/programme/{programmeId}")
-    public ResponseEntity<List<ElectiveSubstitutionRule>> getRulesByProgrammeId(@PathVariable String programmeId) {
+    public ResponseEntity<List<ElectiveSubstitutionRuleDTO>> getRulesByProgrammeId(@PathVariable String programmeId) {
         return ResponseEntity.ok(substitutionRuleService.getRulesByProgrammeId(programmeId));
     }
 }

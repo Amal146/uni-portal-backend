@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.CourseDTO;
 import com.example.demo.model.Course;
 import com.example.demo.service.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -14,55 +15,51 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseController {
     private final CourseService courseService;
-
+    
     @GetMapping
-    public ResponseEntity<List<Course>> getAllCourses() {
+    public ResponseEntity<List<CourseDTO>> getAllCourses() {
         return ResponseEntity.ok(courseService.getAllCourses());
     }
-
+    
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getCourseById(@PathVariable String id) {
+    public ResponseEntity<CourseDTO> getCourseById(@PathVariable String id) {
         return ResponseEntity.ok(courseService.getCourseById(id));
     }
-
+    
     @PostMapping
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
-        return new ResponseEntity<>(courseService.createCourse(course), HttpStatus.CREATED);
+    public ResponseEntity<CourseDTO> createCourse(@RequestBody CourseDTO courseDTO) {
+        CourseDTO created = courseService.createCourse(courseDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
-
+    
     @PutMapping("/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable String id, @RequestBody Course course) {
-        return ResponseEntity.ok(courseService.updateCourse(id, course));
+    public ResponseEntity<CourseDTO> updateCourse(@PathVariable String id, @RequestBody CourseDTO courseDTO) {
+        return ResponseEntity.ok(courseService.updateCourse(id, courseDTO));
     }
-
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable String id) {
         courseService.deleteCourse(id);
         return ResponseEntity.noContent().build();
     }
-
+    
     @GetMapping("/module/{moduleId}")
-    public ResponseEntity<List<Course>> getCoursesByModuleId(@PathVariable String moduleId) {
+    public ResponseEntity<List<CourseDTO>> getCoursesByModuleId(@PathVariable String moduleId) {
         return ResponseEntity.ok(courseService.getCoursesByModuleId(moduleId));
     }
-
+    
+    @GetMapping("/programme/{programmeId}")
+    public ResponseEntity<List<CourseDTO>> getCoursesByProgrammeId(@PathVariable String programmeId) {
+        return ResponseEntity.ok(courseService.getCoursesByProgrammeId(programmeId));
+    }
+    
     @GetMapping("/type/{type}")
-    public ResponseEntity<List<Course>> getCoursesByType(@PathVariable Course.CourseType type) {
+    public ResponseEntity<List<CourseDTO>> getCoursesByType(@PathVariable Course.CourseType type) {
         return ResponseEntity.ok(courseService.getCoursesByType(type));
     }
-
-    @GetMapping("/language/{language}")
-    public ResponseEntity<List<Course>> getCoursesByLanguage(@PathVariable String language) {
-        return ResponseEntity.ok(courseService.getCoursesByLanguage(language));
-    }
-
-    @GetMapping("/number/{courseNumber}")
-    public ResponseEntity<Course> getCourseByCourseNumber(@PathVariable String courseNumber) {
-        return ResponseEntity.ok(courseService.getCourseByCourseNumber(courseNumber));
-    }
-
+    
     @GetMapping("/search")
-    public ResponseEntity<List<Course>> searchCourses(@RequestParam String keyword) {
+    public ResponseEntity<List<CourseDTO>> searchCourses(@RequestParam String keyword) {
         return ResponseEntity.ok(courseService.searchCourses(keyword));
     }
 }
