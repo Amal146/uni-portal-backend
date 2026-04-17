@@ -1,5 +1,6 @@
 # Stage 1: Build the JAR
 FROM eclipse-temurin:17-jdk-alpine AS builder
+ARG CACHEBUST=2
 WORKDIR /app
 
 # Copy Maven wrapper and pom first (for layer caching)
