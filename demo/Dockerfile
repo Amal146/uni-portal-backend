@@ -1,4 +1,4 @@
-# Stage 1: Build the JAR
+# Stage 1: Build the JAR with Lombok and dependencies
 FROM eclipse-temurin:17-jdk-alpine AS builder
 ARG CACHEBUST=2
 WORKDIR /app
@@ -9,12 +9,14 @@ COPY mvnw.cmd .
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Download dependencies
-RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
+# Make Maven wrapper executable and download dependencies
+RUN chmod +x mvnw && \
+    ./mvnw dependency:resolve -DincludeScope=provided && \
+    ./mvnw dependency:go-offline -B
 
-# Copy source and build
+# Copy source and build with Lombok
 COPY src ./src
-RUN ./mvnw clean package -DskipTests -B
+RUN ./mvnw clean package -DskipTests -B -U
 
 # Stage 2: Runtime image
 FROM eclipse-temurin:17-jdk-alpine
