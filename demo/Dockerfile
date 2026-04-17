@@ -13,7 +13,7 @@ RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 
 # Copy source and build
 COPY src ./src
-RUN ./mvnw clean package -DskipTests -B
+RUN ./mvnw dependency:resolve && ./mvnw clean package -DskipTests -B
 
 # Stage 2: Runtime image
 FROM eclipse-temurin:17-jdk-alpine
