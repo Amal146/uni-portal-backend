@@ -1,0 +1,29 @@
+# Docker ignore for Maven Spring Boot project
+target/
+target/classes
+target/mvn-*
+target/test-classes
+*.jar
+*.war
+*.class
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+
+# OS generated
+.DS_Store
+Thumbs.db
+.DS_Store?
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log

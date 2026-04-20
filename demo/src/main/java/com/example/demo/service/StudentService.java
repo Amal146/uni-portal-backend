@@ -24,6 +24,11 @@ public class StudentService {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
     }
+    
+    public Student getStudentByUserId(String userId) {
+        return studentRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Student not found with userId: " + userId));
+    }
 
     @Transactional
     public Student createStudent(Student student) {
@@ -96,6 +101,10 @@ public class StudentService {
 
     public StudentDTO getStudentDTOById(String id) {
         return toDTO(getStudentById(id));
+    }
+
+    public StudentDTO getStudentDTOByUserId(String userId) {
+        return toDTO(getStudentByUserId(userId));
     }
 
     public List<StudentDTO> getAllStudentDTOs() {

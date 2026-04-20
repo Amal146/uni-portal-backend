@@ -3,6 +3,9 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+# Spring Boot config files
+application.properties
+application-*.properties
 
 ### STS ###
 .apt_generated

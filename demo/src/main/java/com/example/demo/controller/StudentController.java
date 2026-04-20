@@ -25,6 +25,11 @@ public class StudentController {
     public ResponseEntity<StudentDTO> getStudentById(@PathVariable String id) {
         return ResponseEntity.ok(studentService.getStudentDTOById(id));
     }
+    
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<StudentDTO> getStudentByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(studentService.getStudentDTOByUserId(userId));
+    }
 
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
