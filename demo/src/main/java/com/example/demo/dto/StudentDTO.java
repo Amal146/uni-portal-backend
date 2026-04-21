@@ -18,7 +18,7 @@ public class StudentDTO {
     private String startSeason;
     private Integer startYear;
     private Integer maxYears;
-    private Integer minEctsPerYear;
+    
     private String status;
     private String role;
 }

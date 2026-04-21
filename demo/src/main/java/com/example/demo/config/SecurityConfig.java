@@ -25,7 +25,6 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/actuator/health").permitAll()
-                // Add /api prefix to Swagger UI and API docs paths
                 .requestMatchers(
                     "/api/swagger-ui/**",
                     "/api/v3/api-docs/**",

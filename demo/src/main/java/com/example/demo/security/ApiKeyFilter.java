@@ -15,30 +15,41 @@ import java.util.ArrayList;
 @Component
 public class ApiKeyFilter extends OncePerRequestFilter {
 
-    private static final String API_KEY_HEADER = "X-API-Key";
-
     @Value("${api.key}")
     private String API_KEY;
 
     @Override
     protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain
-    ) throws ServletException, IOException {
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
 
-        String apiKey = request.getHeader(API_KEY_HEADER);
+        String requestURI = request.getRequestURI();
+
+        // Skip API key check for Swagger UI and API docs
+        if (requestURI.startsWith("/api/swagger-ui/") ||
+                requestURI.startsWith("/api/v3/api-docs") ||
+                requestURI.startsWith("/swagger-ui/") ||
+                requestURI.startsWith("/v3/api-docs")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String apiKey = request.getHeader("X-API-Key");
 
         if (apiKey == null || !apiKey.equals(API_KEY)) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid API Key");
             return;
         }
 
-        // API key is valid, set authentication
-        UsernamePasswordAuthenticationToken authentication =
-            new UsernamePasswordAuthenticationToken("api-user", null, new ArrayList<>());
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("api-user", null,
+                new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            SecurityContextHolder.clearContext(); // 👈 this is the only thing you're adding
+        }
     }
 }

@@ -51,7 +51,6 @@ public class StudentService {
         student.setStartSeason(studentDetails.getStartSeason());
         student.setStartYear(studentDetails.getStartYear());
         student.setMaxYears(studentDetails.getMaxYears());
-        student.setMinEctsPerYear(studentDetails.getMinEctsPerYear());
         student.setStatus(studentDetails.getStatus());
         student.setRole(studentDetails.getRole());
         return studentRepository.save(student);
@@ -93,7 +92,6 @@ public class StudentService {
         dto.setStartSeason(student.getStartSeason() != null ? student.getStartSeason().name() : null);
         dto.setStartYear(student.getStartYear());
         dto.setMaxYears(student.getMaxYears());
-        dto.setMinEctsPerYear(student.getMinEctsPerYear());
         dto.setStatus(student.getStatus() != null ? student.getStatus().name() : null);
         dto.setRole(student.getRole() != null ? student.getRole().name() : null);
         return dto;

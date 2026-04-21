@@ -37,7 +37,7 @@ public class Student {
     private Integer startYear;
     private Integer maxYears;
     
-    private Integer minEctsPerYear;
+    
     
     @Enumerated(EnumType.STRING)
     private StudentStatus status;

@@ -65,6 +65,7 @@ public class ProgrammeService {
         programme.setValidFrom(dto.getValidFrom());
         programme.setThesisEcts(dto.getThesisEcts());
         programme.setThesisMinEcts(dto.getThesisMinEcts());
+        programme.setMinEctsPerYear(dto.getMinEctsPerYear());
         
         // Set Degree if degree is provided
         if (dto.getDegree() != null) {
@@ -82,7 +83,8 @@ public class ProgrammeService {
         programme.setValidFrom(dto.getValidFrom());
         programme.setThesisEcts(dto.getThesisEcts());
         programme.setThesisMinEcts(dto.getThesisMinEcts());
-        
+        programme.setMinEctsPerYear(dto.getMinEctsPerYear());
+
         // Update Degree if degree is provided
         if (dto.getDegree() != null) {
             programme.setDegree(Programme.Degree.valueOf(dto.getDegree()));

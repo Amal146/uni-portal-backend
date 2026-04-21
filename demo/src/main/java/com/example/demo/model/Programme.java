@@ -31,6 +31,8 @@ public class Programme {
     
     private Integer thesisEcts;
     private Integer thesisMinEcts;
+
+    private Integer minEctsPerYear;
     
     @OneToMany(mappedBy = "programme", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Module> modules = new ArrayList<>();

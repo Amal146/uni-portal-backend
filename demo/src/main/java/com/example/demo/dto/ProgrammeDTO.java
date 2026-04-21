@@ -24,6 +24,7 @@ public class ProgrammeDTO {
     private LocalDate validFrom;
     private Integer thesisEcts;
     private Integer thesisMinEcts;
+    private Integer minEctsPerYear;
     
     // Static method to convert from Entity to DTO
     public static ProgrammeDTO fromEntity(Programme programme) {
