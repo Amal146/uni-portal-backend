@@ -24,7 +24,7 @@ public class Enrollment {
     private Course course;
     
     @ManyToOne
-    @JoinColumn(name = "semester_id", nullable = false)
+    @JoinColumn(name = "semester_id", nullable = true)
     private Semester semester;
     
     private Integer plannedSlot;
