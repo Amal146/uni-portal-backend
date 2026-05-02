@@ -112,7 +112,6 @@ public class CourseService {
         course.setPrivateStudyTime(dto.getPrivateStudyTime());
         course.setThesisPrereq(dto.getThesisPrereq());
         course.setMoodleUrl(dto.getMoodleUrl());
-        course.setCategory(dto.getCategory());
         
         // Set Module if moduleId is provided
         if (dto.getModuleId() != null) {
@@ -157,7 +156,6 @@ public class CourseService {
         course.setPrivateStudyTime(dto.getPrivateStudyTime());
         course.setThesisPrereq(dto.getThesisPrereq());
         course.setMoodleUrl(dto.getMoodleUrl());
-        course.setCategory(dto.getCategory());
         
         // Update Module if moduleId is provided
         if (dto.getModuleId() != null) {

@@ -47,7 +47,6 @@ public class Course {
     @JoinColumn(name = "coordinator_id")
     private Lecturer coordinator;
     
-    private String category;
     
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Enrollment> enrollments = new ArrayList<>();

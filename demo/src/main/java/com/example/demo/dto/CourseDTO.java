@@ -28,7 +28,6 @@ public class CourseDTO {
     private Boolean thesisPrereq;
     private String moodleUrl;
     private String coordinatorId;
-    private String category;
     
     // Static method to convert from Course entity to DTO
     public static CourseDTO fromEntity(Course course) {
@@ -50,7 +49,6 @@ public class CourseDTO {
         dto.setThesisPrereq(course.getThesisPrereq());
         dto.setMoodleUrl(course.getMoodleUrl());
         dto.setCoordinatorId(course.getCoordinator() != null ? course.getCoordinator().getId() : null);
-        dto.setCategory(course.getCategory());
         
         return dto;
     }
