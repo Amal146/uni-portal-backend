@@ -33,7 +33,6 @@ public class Enrollment {
     @Column(nullable = false)
     private EnrollmentStatus status;
     
-    private Integer grade;
     
     @Column(nullable = false)
     private LocalDateTime enrolledAt;

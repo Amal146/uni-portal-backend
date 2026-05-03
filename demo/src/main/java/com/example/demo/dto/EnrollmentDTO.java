@@ -20,7 +20,6 @@ public class EnrollmentDTO {
     private String semesterId;
     private Integer plannedSlot;
     private String status;
-    private Integer grade;
     private LocalDateTime enrolledAt;
     
     // Static method to convert from Entity to DTO
@@ -34,7 +33,6 @@ public class EnrollmentDTO {
         dto.setSemesterId(enrollment.getSemester() != null ? enrollment.getSemester().getId() : null);
         dto.setPlannedSlot(enrollment.getPlannedSlot());
         dto.setStatus(enrollment.getStatus() != null ? enrollment.getStatus().name() : null);
-        dto.setGrade(enrollment.getGrade());
         dto.setEnrolledAt(enrollment.getEnrolledAt());
         
         return dto;

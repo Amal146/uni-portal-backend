@@ -86,7 +86,6 @@ public class EnrollmentService {
         Enrollment enrollment = new Enrollment();
         enrollment.setId(dto.getId());
         enrollment.setPlannedSlot(dto.getPlannedSlot());
-        enrollment.setGrade(dto.getGrade());
         enrollment.setEnrolledAt(dto.getEnrolledAt());
         
         // Set Student if studentId is provided
@@ -120,7 +119,6 @@ public class EnrollmentService {
     
     private void updateEnrollmentEntity(Enrollment enrollment, EnrollmentDTO dto) {
         enrollment.setPlannedSlot(dto.getPlannedSlot());
-        enrollment.setGrade(dto.getGrade());
         enrollment.setEnrolledAt(dto.getEnrolledAt());
         
         // Update Student if studentId is provided
