@@ -61,7 +61,7 @@ public class Course {
     private List<Registration> registrations = new ArrayList<>();
     
     public enum CourseType {
-        lecture, seminar, exam
+        lecture, seminar, exam, thesis
     }
     
     public enum Season {
