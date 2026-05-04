@@ -9,6 +9,5 @@ import java.util.List;
 public interface ElectiveSlotRepository extends JpaRepository<ElectiveSlot, String> {
     List<ElectiveSlot> findByStudentId(String studentId);
     List<ElectiveSlot> findByStudentIdAndType(String studentId, ElectiveSlot.ElectiveType type);
-    List<ElectiveSlot> findByStudentIdAndStatus(String studentId, ElectiveSlot.ElectiveStatus status);
     List<ElectiveSlot> findBySelectedCourseId(String courseId);
 }

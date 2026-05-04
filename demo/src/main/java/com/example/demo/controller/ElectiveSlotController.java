@@ -52,11 +52,6 @@ public class ElectiveSlotController {
         return ResponseEntity.ok(electiveSlotService.getSlotsByStudentIdAndType(studentId, type));
     }
 
-    @GetMapping("/student/{studentId}/status/{status}")
-    public ResponseEntity<List<ElectiveSlotDTO>> getSlotsByStudentIdAndStatus(
-            @PathVariable String studentId, @PathVariable String status) {
-        return ResponseEntity.ok(electiveSlotService.getSlotsByStudentIdAndStatus(studentId, status));
-    }
 
     @GetMapping("/course/{courseId}")
     public ResponseEntity<List<ElectiveSlotDTO>> getSlotsBySelectedCourseId(@PathVariable String courseId) {
