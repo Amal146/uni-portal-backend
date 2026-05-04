@@ -37,7 +37,7 @@ public class ElectiveSlot {
     private Course selectedCourse;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = true)
     private ElectiveStatus status;
     
     public enum ElectiveType {
