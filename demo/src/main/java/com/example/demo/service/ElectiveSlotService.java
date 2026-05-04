@@ -124,39 +124,41 @@ public class ElectiveSlotService {
     }
     
     private void updateElectiveSlotEntity(ElectiveSlot electiveSlot, ElectiveSlotDTO dto) {
-        electiveSlot.setLabel(dto.getLabel());
-        electiveSlot.setSlotNumber(dto.getSlotNumber());
-        electiveSlot.setPlannedSlot(dto.getPlannedSlot());
-        
-        // Update Student if studentId is provided
-        if (dto.getStudentId() != null) {
-            Student student = studentRepository.findById(dto.getStudentId())
-                    .orElseThrow(() -> new RuntimeException("Student not found with id: " + dto.getStudentId()));
-            electiveSlot.setStudent(student);
-        }
-        
-        // Update Type if type is provided
-        if (dto.getType() != null) {
-            electiveSlot.setType(ElectiveSlot.ElectiveType.valueOf(dto.getType()));
-        }
-        
-        // Update PlannedSemester if plannedSemesterId is provided
-        if (dto.getPlannedSemesterId() != null) {
-            Semester semester = semesterRepository.findById(dto.getPlannedSemesterId())
-                    .orElseThrow(() -> new RuntimeException("Semester not found with id: " + dto.getPlannedSemesterId()));
-            electiveSlot.setPlannedSemester(semester);
-        }
-        
-        // Update SelectedCourse if selectedCourseId is provided
-        if (dto.getSelectedCourseId() != null) {
-            Course course = courseRepository.findById(dto.getSelectedCourseId())
-                    .orElseThrow(() -> new RuntimeException("Course not found with id: " + dto.getSelectedCourseId()));
-            electiveSlot.setSelectedCourse(course);
-        }
-        
-        // Update Status if status is provided
-        if (dto.getStatus() != null) {
-            electiveSlot.setStatus(ElectiveSlot.ElectiveStatus.valueOf(dto.getStatus()));
-        }
+    electiveSlot.setLabel(dto.getLabel());
+    electiveSlot.setSlotNumber(dto.getSlotNumber());
+    electiveSlot.setPlannedSlot(dto.getPlannedSlot());
+
+    // Always update — null clears the relationship
+    if (dto.getStudentId() != null) {
+        Student student = studentRepository.findById(dto.getStudentId())
+                .orElseThrow(() -> new RuntimeException("Student not found: " + dto.getStudentId()));
+        electiveSlot.setStudent(student);
     }
+
+    electiveSlot.setType(dto.getType() != null
+            ? ElectiveSlot.ElectiveType.valueOf(dto.getType())
+            : null);
+
+    // Null explicitly clears the semester
+    if (dto.getPlannedSemesterId() != null) {
+        Semester semester = semesterRepository.findById(dto.getPlannedSemesterId())
+                .orElseThrow(() -> new RuntimeException("Semester not found: " + dto.getPlannedSemesterId()));
+        electiveSlot.setPlannedSemester(semester);
+    } else {
+        electiveSlot.setPlannedSemester(null); // ← this was missing
+    }
+
+    // Null explicitly clears the course
+    if (dto.getSelectedCourseId() != null) {
+        Course course = courseRepository.findById(dto.getSelectedCourseId())
+                .orElseThrow(() -> new RuntimeException("Course not found: " + dto.getSelectedCourseId()));
+        electiveSlot.setSelectedCourse(course);
+    } else {
+        electiveSlot.setSelectedCourse(null); // ← this was missing
+    }
+
+    electiveSlot.setStatus(dto.getStatus() != null
+            ? ElectiveSlot.ElectiveStatus.valueOf(dto.getStatus())
+            : null);
+}
 }
