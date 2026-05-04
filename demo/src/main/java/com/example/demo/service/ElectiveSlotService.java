@@ -67,10 +67,7 @@ public class ElectiveSlotService {
         return ElectiveSlotDTO.fromEntities(electiveSlotRepository.findByStudentIdAndType(studentId, typeEnum));
     }
 
-    public List<ElectiveSlotDTO> getSlotsByStudentIdAndStatus(String studentId, String status) {
-        ElectiveSlot.ElectiveStatus statusEnum = ElectiveSlot.ElectiveStatus.valueOf(status);
-        return ElectiveSlotDTO.fromEntities(electiveSlotRepository.findByStudentIdAndStatus(studentId, statusEnum));
-    }
+   
 
     public List<ElectiveSlotDTO> getSlotsBySelectedCourseId(String courseId) {
         return ElectiveSlotDTO.fromEntities(electiveSlotRepository.findBySelectedCourseId(courseId));
@@ -115,10 +112,7 @@ public class ElectiveSlotService {
             electiveSlot.setSelectedCourse(course);
         }
         
-        // Set Status if status is provided
-        if (dto.getStatus() != null) {
-            electiveSlot.setStatus(ElectiveSlot.ElectiveStatus.valueOf(dto.getStatus()));
-        }
+        
         
         return electiveSlot;
     }
@@ -157,8 +151,6 @@ public class ElectiveSlotService {
         electiveSlot.setSelectedCourse(null); // ← this was missing
     }
 
-    electiveSlot.setStatus(dto.getStatus() != null
-            ? ElectiveSlot.ElectiveStatus.valueOf(dto.getStatus())
-            : null);
+ 
 }
 }

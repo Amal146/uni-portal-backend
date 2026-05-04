@@ -19,7 +19,6 @@ public class ElectiveSlotDTO {
     private Integer plannedSlot;
     private String plannedSemesterId;
     private String selectedCourseId;
-    private String status;
     
     // Static method to convert from Entity to DTO
     public static ElectiveSlotDTO fromEntity(ElectiveSlot electiveSlot) {
@@ -34,7 +33,6 @@ public class ElectiveSlotDTO {
         dto.setPlannedSlot(electiveSlot.getPlannedSlot());
         dto.setPlannedSemesterId(electiveSlot.getPlannedSemester() != null ? electiveSlot.getPlannedSemester().getId() : null);
         dto.setSelectedCourseId(electiveSlot.getSelectedCourse() != null ? electiveSlot.getSelectedCourse().getId() : null);
-        dto.setStatus(electiveSlot.getStatus() != null ? electiveSlot.getStatus().name() : null);
         
         return dto;
     }

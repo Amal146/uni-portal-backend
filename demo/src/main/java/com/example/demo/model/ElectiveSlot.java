@@ -36,15 +36,10 @@ public class ElectiveSlot {
     @JoinColumn(name = "selected_course_id")
     private Course selectedCourse;
     
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = true)
-    private ElectiveStatus status;
-    
+  
     public enum ElectiveType {
         core_elective, cross_faculty
     }
     
-    public enum ElectiveStatus {
-        completed, registered, pending
-    }
+    
 }
