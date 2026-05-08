@@ -110,7 +110,6 @@ public class CourseService {
         course.setDescription(dto.getDescription());
         course.setTaughtUnits(dto.getTaughtUnits());
         course.setPrivateStudyTime(dto.getPrivateStudyTime());
-        course.setThesisPrereq(dto.getThesisPrereq());
         course.setMoodleUrl(dto.getMoodleUrl());
         
         // Set Module if moduleId is provided
@@ -154,7 +153,6 @@ public class CourseService {
         course.setDescription(dto.getDescription());
         course.setTaughtUnits(dto.getTaughtUnits());
         course.setPrivateStudyTime(dto.getPrivateStudyTime());
-        course.setThesisPrereq(dto.getThesisPrereq());
         course.setMoodleUrl(dto.getMoodleUrl());
         
         // Update Module if moduleId is provided

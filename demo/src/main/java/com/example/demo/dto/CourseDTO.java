@@ -25,7 +25,6 @@ public class CourseDTO {
     private String description;
     private String taughtUnits;
     private String privateStudyTime;
-    private Boolean thesisPrereq;
     private String moodleUrl;
     private String coordinatorId;
     
@@ -46,7 +45,6 @@ public class CourseDTO {
         dto.setDescription(course.getDescription());
         dto.setTaughtUnits(course.getTaughtUnits());
         dto.setPrivateStudyTime(course.getPrivateStudyTime());
-        dto.setThesisPrereq(course.getThesisPrereq());
         dto.setMoodleUrl(course.getMoodleUrl());
         dto.setCoordinatorId(course.getCoordinator() != null ? course.getCoordinator().getId() : null);
         

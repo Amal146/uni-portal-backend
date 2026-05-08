@@ -40,7 +40,6 @@ public class Course {
     private String taughtUnits;
     private String privateStudyTime;
     
-    private Boolean thesisPrereq;
     private String moodleUrl;
     
     @ManyToOne
