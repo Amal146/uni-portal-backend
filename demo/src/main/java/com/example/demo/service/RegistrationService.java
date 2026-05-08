@@ -4,11 +4,9 @@ import com.example.demo.dto.RegistrationDTO;
 import com.example.demo.model.Course;
 import com.example.demo.model.Registration;
 import com.example.demo.model.RegistrationPeriod;
-import com.example.demo.model.Student;
 import com.example.demo.repository.CourseRepository;
 import com.example.demo.repository.RegistrationPeriodRepository;
 import com.example.demo.repository.RegistrationRepository;
-import com.example.demo.repository.StudentRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +20,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class RegistrationService {
     private final RegistrationRepository registrationRepository;
-    private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
     private final RegistrationPeriodRepository registrationPeriodRepository;
 
@@ -71,10 +68,7 @@ public class RegistrationService {
         return RegistrationDTO.fromEntities(registrationRepository.findByRegistrationPeriodId(periodId));
     }
 
-    public List<RegistrationDTO> getRegistrationsByStudentIdAndStatus(String studentId, String status) {
-        Registration.RegistrationStatus statusEnum = Registration.RegistrationStatus.valueOf(status);
-        return RegistrationDTO.fromEntities(registrationRepository.findByStudentIdAndStatus(studentId, statusEnum));
-    }
+    
 
     public RegistrationDTO getRegistrationByStudentIdAndCourseId(String studentId, String courseId) {
         Registration registration = registrationRepository.findByStudentIdAndCourseId(studentId, courseId)
@@ -91,17 +85,8 @@ public class RegistrationService {
     private Registration convertToEntity(RegistrationDTO dto) {
         Registration registration = new Registration();
         registration.setId(dto.getId());
-        registration.setSeatsAvailable(dto.getSeatsAvailable());
         registration.setSeatsTotal(dto.getSeatsTotal());
-        registration.setPrerequisites(dto.getPrerequisites());
-        registration.setPrereqsMet(dto.getPrereqsMet());
-        
-        // Set Student if studentId is provided
-        if (dto.getStudentId() != null) {
-            Student student = studentRepository.findById(dto.getStudentId())
-                    .orElseThrow(() -> new RuntimeException("Student not found with id: " + dto.getStudentId()));
-            registration.setStudent(student);
-        }
+       
         
         // Set Course if courseId is provided
         if (dto.getCourseId() != null) {
@@ -117,27 +102,14 @@ public class RegistrationService {
             registration.setRegistrationPeriod(period);
         }
         
-        // Set Status if status is provided
-        if (dto.getStatus() != null) {
-            registration.setStatus(Registration.RegistrationStatus.valueOf(dto.getStatus()));
-        }
         
         return registration;
     }
     
     private void updateRegistrationEntity(Registration registration, RegistrationDTO dto) {
-        registration.setSeatsAvailable(dto.getSeatsAvailable());
         registration.setSeatsTotal(dto.getSeatsTotal());
-        registration.setPrerequisites(dto.getPrerequisites());
-        registration.setPrereqsMet(dto.getPrereqsMet());
         
-        // Update Student if studentId is provided
-        if (dto.getStudentId() != null) {
-            Student student = studentRepository.findById(dto.getStudentId())
-                    .orElseThrow(() -> new RuntimeException("Student not found with id: " + dto.getStudentId()));
-            registration.setStudent(student);
-        }
-        
+      
         // Update Course if courseId is provided
         if (dto.getCourseId() != null) {
             Course course = courseRepository.findById(dto.getCourseId())
@@ -151,10 +123,6 @@ public class RegistrationService {
                     .orElseThrow(() -> new RuntimeException("RegistrationPeriod not found with id: " + dto.getRegistrationPeriodId()));
             registration.setRegistrationPeriod(period);
         }
-        
-        // Update Status if status is provided
-        if (dto.getStatus() != null) {
-            registration.setStatus(Registration.RegistrationStatus.valueOf(dto.getStatus()));
-        }
+       
     }
 }

@@ -57,11 +57,7 @@ public class RegistrationController {
         return ResponseEntity.ok(registrationService.getRegistrationsByRegistrationPeriodId(periodId));
     }
 
-    @GetMapping("/student/{studentId}/status/{status}")
-    public ResponseEntity<List<RegistrationDTO>> getRegistrationsByStudentIdAndStatus(
-            @PathVariable String studentId, @PathVariable String status) {
-        return ResponseEntity.ok(registrationService.getRegistrationsByStudentIdAndStatus(studentId, status));
-    }
+
 
     @GetMapping("/student/{studentId}/course/{courseId}")
     public ResponseEntity<RegistrationDTO> getRegistrationByStudentIdAndCourseId(
