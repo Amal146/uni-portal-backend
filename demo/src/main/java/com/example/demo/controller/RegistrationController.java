@@ -54,10 +54,4 @@ public class RegistrationController {
     }
 
 
-
-    @GetMapping("/student/{studentId}/course/{courseId}")
-    public ResponseEntity<RegistrationDTO> getRegistrationByStudentIdAndCourseId(
-            @PathVariable String studentId, @PathVariable String courseId) {
-        return ResponseEntity.ok(registrationService.getRegistrationByStudentIdAndCourseId(studentId, courseId));
-    }
 }

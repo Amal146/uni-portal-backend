@@ -67,11 +67,6 @@ public class RegistrationService {
 
     
 
-    public RegistrationDTO getRegistrationByStudentIdAndCourseId(String studentId, String courseId) {
-        Registration registration = registrationRepository.findByStudentIdAndCourseId(studentId, courseId)
-                .orElseThrow(() -> new RuntimeException("Registration not found"));
-        return RegistrationDTO.fromEntity(registration);
-    }
     
     // Helper methods for internal use
     private Registration getRegistrationEntityById(String id) {
