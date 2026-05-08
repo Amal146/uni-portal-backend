@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -56,5 +57,10 @@ public class EnrollmentController {
     public ResponseEntity<List<EnrollmentDTO>> getEnrollmentsByStudentIdAndStatus(
             @PathVariable String studentId, @PathVariable String status) {
         return ResponseEntity.ok(enrollmentService.getEnrollmentsByStudentIdAndStatus(studentId, status));
+    }
+
+    @GetMapping("/counts")
+    public ResponseEntity<Map<String, Long>> getRegisteredCounts(@RequestParam String semesterId) {
+         return ResponseEntity.ok(enrollmentService.getRegisteredCountsBySemesterId(semesterId));
     }
 }

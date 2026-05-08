@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -147,4 +149,13 @@ public class EnrollmentService {
             enrollment.setStatus(Enrollment.EnrollmentStatus.valueOf(dto.getStatus()));
         }
     }
+
+    public Map<String, Long> getRegisteredCountsBySemesterId(String semesterId) {
+    List<Object[]> rows = enrollmentRepository.countRegisteredBySemesterId(semesterId);
+    Map<String, Long> result = new HashMap<>();
+    for (Object[] row : rows) {
+        result.put((String) row[0], (Long) row[1]);
+    }
+    return result;
+}
 }
