@@ -55,9 +55,7 @@ public class Student {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ElectiveSlot> electiveSlots = new ArrayList<>();
     
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Registration> registrations = new ArrayList<>();
-    
+   
     public enum Season {
         Winter, Summer
     }
