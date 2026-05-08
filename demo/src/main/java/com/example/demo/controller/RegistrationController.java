@@ -42,11 +42,7 @@ public class RegistrationController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/student/{studentId}")
-    public ResponseEntity<List<RegistrationDTO>> getRegistrationsByStudentId(@PathVariable String studentId) {
-        return ResponseEntity.ok(registrationService.getRegistrationsByStudentId(studentId));
-    }
-
+    
     @GetMapping("/course/{courseId}")
     public ResponseEntity<List<RegistrationDTO>> getRegistrationsByCourseId(@PathVariable String courseId) {
         return ResponseEntity.ok(registrationService.getRegistrationsByCourseId(courseId));

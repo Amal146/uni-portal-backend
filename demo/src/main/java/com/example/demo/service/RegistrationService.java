@@ -56,10 +56,7 @@ public class RegistrationService {
         registrationRepository.deleteById(id);
     }
 
-    public List<RegistrationDTO> getRegistrationsByStudentId(String studentId) {
-        return RegistrationDTO.fromEntities(registrationRepository.findByStudentId(studentId));
-    }
-
+   
     public List<RegistrationDTO> getRegistrationsByCourseId(String courseId) {
         return RegistrationDTO.fromEntities(registrationRepository.findByCourseId(courseId));
     }

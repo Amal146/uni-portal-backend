@@ -8,7 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, String> {
-    List<Registration> findByStudentId(String studentId);
     List<Registration> findByCourseId(String courseId);
     List<Registration> findByRegistrationPeriodId(String registrationPeriodId);
     Optional<Registration> findByStudentIdAndCourseId(String studentId, String courseId);
