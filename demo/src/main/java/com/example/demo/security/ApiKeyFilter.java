@@ -18,13 +18,23 @@ public class ApiKeyFilter extends OncePerRequestFilter {
     private String API_KEY;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        String path = request.getServletPath();
+
+        return path.startsWith("/swagger-ui") ||
+               path.startsWith("/v3/api-docs") ||
+               path.startsWith("/swagger-resources") ||
+               path.startsWith("/webjars");
+    }
+
+    @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // Allow preflight
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
@@ -47,13 +57,12 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Case-insensitive header lookup for x-api-key
-     */
     private String extractApiKeyIgnoreCase(HttpServletRequest request) {
+
         Enumeration<String> headers = request.getHeaderNames();
 
         while (headers.hasMoreElements()) {
+
             String headerName = headers.nextElement();
 
             if ("x-api-key".equalsIgnoreCase(headerName)) {
